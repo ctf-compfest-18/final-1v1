@@ -1,0 +1,7 @@
+services:
+  challenge:
+    build: .
+    ports:
+      - "1337:1337"
+    security_opt:
+      - seccomp=unconfined

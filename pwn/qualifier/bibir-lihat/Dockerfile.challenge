@@ -1,0 +1,17 @@
+FROM debian:sid-slim
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        socat \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -m ctf
+
+WORKDIR /home/ctf
+COPY chall flag.txt ./
+RUN chown -R root:root /home/ctf \
+    && chmod 755 /home/ctf /home/ctf/chall \
+    && chmod 444 /home/ctf/flag.txt
+
+USER ctf
+EXPOSE 1337
+CMD ["socat", "TCP-LISTEN:1337,reuseaddr,fork", "EXEC:/home/ctf/chall,stderr"]
