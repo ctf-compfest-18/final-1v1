@@ -1,12 +1,28 @@
+version: "3.9"
+
 services:
   vault:
     build: .
-    restart: always
+    container_name: vault
+
+    restart: unless-stopped
+
     ports:
-      - 3100:1337
+      - "3100:5000"
+
+    privileged: true
+
     read_only: true
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 256M
+
+    tmpfs:
+      - /tmp:size=16M
+      - /run:size=4M
+
+    environment:
+      JAIL_TIME: "60"
+      JAIL_MEM: "64M"
+      JAIL_PIDS: "16"
+      JAIL_CPU: "100"
+
+    mem_limit: 256m
+    cpus: 0.25

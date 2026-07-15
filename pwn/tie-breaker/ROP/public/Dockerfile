@@ -1,21 +1,16 @@
-FROM ubuntu:24.04
+FROM pwn.red/jail
 
-RUN apt-get update && \
-    apt-get install -y \
-        socat \
-        util-linux && \
-    rm -rf /var/lib/apt/lists/*
+COPY --from=ubuntu:24.04 / /srv
 
-WORKDIR /app
+COPY challenge /srv/app/challenge
 
-COPY challenge /app/challenge
-COPY start.sh /app/start.sh
+RUN chmod 755 /srv/app/challenge && \
+    ln -s /app/challenge /srv/app/run
 
-RUN chmod +x /app/challenge /app/start.sh
+RUN echo "COMPFEST18{REDACTED}" > /srv/flag.txt && \
+    chmod 444 /srv/flag.txt
 
-RUN echo "COMPFEST18{REDACTED}" > /flag.txt
-RUN chmod 444 /flag.txt
-
-EXPOSE 1337
-
-CMD ["/app/start.sh"]
+ENV JAIL_TIME=60
+ENV JAIL_MEM=64M
+ENV JAIL_PIDS=16
+ENV JAIL_CPU=100

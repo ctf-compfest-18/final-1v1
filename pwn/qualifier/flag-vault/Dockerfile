@@ -1,19 +1,20 @@
-FROM ubuntu@sha256:786a8b558f7be160c6c8c4a54f9a57274f3b4fb1491cf65146521ae77ff1dc54
+FROM pwn.red/jail
 
-ENV DEBIAN_FRONTEND=noninteractive
+# Copy an Ubuntu userspace into the jailed rootfs
+COPY --from=ubuntu@sha256:786a8b558f7be160c6c8c4a54f9a57274f3b4fb1491cf65146521ae77ff1dc54 / /srv
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends socat
+# Challenge files
+COPY ./src/chall /srv/app/chall
+COPY ./src/flag.txt /srv/app/flag.txt
 
-RUN rm -rf /var/lib/apt/lists/*
-RUN     useradd ctf
-WORKDIR /home/ctf
+# Make the binary executable and tell the jail what to run
+RUN chmod 755 /srv/app/chall && \
+    ln -s /app/chall /srv/app/run
 
-COPY ./chall /home/ctf/
-COPY ./flag.txt /home/ctf/
+# Jail configuration
+ENV JAIL_TIME=60
+ENV JAIL_MEM=64M
+ENV JAIL_PIDS=16
+ENV JAIL_CPU=100
 
-RUN chown -R root:root  /home/ctf
-RUN chmod -R 755        /home/ctf
-
-EXPOSE 1337
-ENTRYPOINT ["socat", "TCP-LISTEN:1337,reuseaddr,fork,nodelay,su=ctf", "EXEC:'timeout 60 ./chall'"]
+EXPOSE 5000

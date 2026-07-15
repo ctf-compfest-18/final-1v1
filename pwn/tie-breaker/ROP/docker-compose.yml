@@ -2,6 +2,14 @@ services:
   challenge:
     build: .
     ports:
-      - "1337:1337"
-    security_opt:
-      - seccomp=unconfined
+      - "1337:5000"
+
+    privileged: true
+
+    restart: unless-stopped
+
+    environment:
+      JAIL_TIME: "60"
+      JAIL_MEM: "64M"
+      JAIL_PIDS: "16"
+      JAIL_CPU: "100"
