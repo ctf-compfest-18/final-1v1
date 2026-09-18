@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
 
     ports:
-      - "1337:5000"
+      - "5000:5000"
 
     privileged: true
 
