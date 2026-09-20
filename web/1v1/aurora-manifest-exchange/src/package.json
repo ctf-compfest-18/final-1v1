@@ -1,0 +1,8 @@
+{
+  "name": "aurora-manifest-exchange",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node src/server.js"
+  }
+}
