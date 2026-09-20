@@ -1,0 +1,4 @@
+ct = bytes.fromhex("9e2819689a5d7a609a29715e8050544fab406a49964f1540ad75764a955e1916ad291955954f665fad741952ad2b6a4a972a664fad2b7616972a114eae2a4c539529195196406e5cab2a195f955e194cae5f764cae2a765fa9491d1b")
+key = [0xCF, 0x18, 0x20, 0x26]
+
+print(bytes(c ^ key[i % 4] for i, c in enumerate(ct)).decode())
