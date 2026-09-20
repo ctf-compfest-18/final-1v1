@@ -1,0 +1,17 @@
+services:
+  ghost-queue:
+    image: python:3.12-alpine
+    environment:
+      PORT: "7713"
+    command: ["python", "/app/server.py"]
+    volumes:
+      - ./src/server.py:/app/server.py:ro
+    ports:
+      - "7713:7713"
+    read_only: true
+    tmpfs:
+      - /tmp:size=1m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true

@@ -1,0 +1,27 @@
+name: "Ghost Queue"
+author: "PolarBear7"
+category: forensics
+
+description: |
+  A print server was cleaned up after a suspicious job was submitted. The queue is empty, but one filter process is still handling an orphaned document.
+
+  Connect to the forensic console, reconstruct which job was processed, and recover the document proof.
+
+  Service: nc {{ IP_SERVER }} 7713
+
+flags:
+  - COMPFEST18{8074f0dba10bfa1a26934d0eb00bba4b162471c33e262b8b708eb2d8114af7d9}
+
+tags:
+  - forensics
+  - linux
+  - incident-response
+  - process-forensics
+  - file-recovery
+
+value: 500
+state: hidden
+attachment: public/ghost-queue.zip
+expose:
+  containerPort: 7713
+  targetPort: 7713

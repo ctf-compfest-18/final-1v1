@@ -1,0 +1,16 @@
+services:
+  last-good-commit:
+    image: python:3.12-alpine
+    environment:
+      PORT: "7749"
+    command: ["python", "/app/server.py"]
+    volumes:
+      - ./src/server.py:/app/server.py:ro
+      - ./src/answer.json:/app/answer.json:ro
+    ports:
+      - "7749:7749"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
