@@ -1,4 +1,5 @@
-Nama Chall: Simple Rev
+Chall: Simple Rev
+
 Author: demtcsre
 
 Description:
