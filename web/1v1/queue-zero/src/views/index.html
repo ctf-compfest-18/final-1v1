@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Queue Zero</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<canvas id="rail" aria-hidden="true"></canvas>
+
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect x="6" y="10" width="28" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <rect x="6" y="22" width="28" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".6"/>
+        <path d="M11 13.5h4M11 25.5h4M22 13.5h7M22 25.5h7" stroke="currentColor" stroke-width="1.2"/>
+      </svg>
+      <div>
+        <div class="brand-name">Northline Claims</div>
+        <div class="brand-sub">Settlement Desk</div>
+      </div>
+    </div>
+    <div class="rail-top" role="status">
+      <span class="led" aria-hidden="true"></span>
+      <span>queue online</span>
+      <span class="sep" aria-hidden="true"></span>
+      <span class="clock" id="clock">--:--:--Z</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <p class="kicker">Compensation queue / delayed shipments</p>
+    <h1>Queue <span class="thin">Zero</span></h1>
+    <p class="lede">Open a delayed-shipment claim, then redeem its receipt through a settlement lane. Each receipt is expected to settle once.</p>
+  </section>
+
+  <div class="stage" id="deck">
+    <section class="card tilt" id="tilt">
+      <div class="card-head">
+        <h2>Claim receipt</h2>
+        <span class="chip">single-use</span>
+      </div>
+
+      <div class="token-wrap">
+        <div class="token-stage" aria-hidden="true">
+          <div class="token" id="token">
+            <div class="face top"></div>
+            <div class="face bot"></div>
+            <div class="face front"></div>
+            <div class="face back"></div>
+            <div class="face left"></div>
+            <div class="face right"></div>
+          </div>
+        </div>
+        <dl class="token-meta">
+          <div><dt>claim id</dt><dd id="cid">awaiting issue</dd></div>
+          <div><dt>receipt</dt><dd id="ctk">awaiting issue</dd></div>
+        </dl>
+      </div>
+
+      <button id="open" type="button">Open compensation claim</button>
+
+      <div class="lanes" role="group" aria-label="Settlement lanes">
+        <button class="lane" data-lane="north" type="button"><span class="lane-led" aria-hidden="true"></span><span class="lane-name">North lane</span><span class="lane-sub">redeem</span></button>
+        <button class="lane" data-lane="east" type="button"><span class="lane-led" aria-hidden="true"></span><span class="lane-name">East lane</span><span class="lane-sub">redeem</span></button>
+        <button class="lane" data-lane="west" type="button"><span class="lane-led" aria-hidden="true"></span><span class="lane-name">West lane</span><span class="lane-sub">redeem</span></button>
+      </div>
+
+      <button id="assemble" class="secondary" type="button">Assemble release package</button>
+      <p class="hint">Settlement lanes share one receipt and answer asynchronously. Distinct fragments are required for release.</p>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Activity</h2>
+        <span class="chip live">live</span>
+      </div>
+      <pre id="out" class="log" aria-live="polite">No active claim.</pre>
+    </section>
+  </div>
+
+  <footer class="foot">
+    <span>Northline Claims / settlement operations</span>
+    <span>desk build 4.7.2</span>
+  </footer>
+</div>
+
+<script>
+var claim = null, fragments = [];
+(function () {
+  'use strict';
+  var reduce = false;
+  try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { reduce = false; }
+
+  var clock = document.getElementById('clock');
+  function stamp() {
+    if (!clock) return;
+    var d = new Date();
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    clock.textContent = p(d.getUTCHours()) + ':' + p(d.getUTCMinutes()) + ':' + p(d.getUTCSeconds()) + 'Z';
+  }
+  stamp();
+  window.setInterval(stamp, 1000);
+
+  var canvas = document.getElementById('rail');
+  var ctx = canvas ? canvas.getContext('2d') : null;
+  var W = 0, H = 0, rows = [], packets = [], flashes = {};
+
+  function seed() {
+    if (!canvas) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.width = Math.floor(window.innerWidth * dpr);
+    H = canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    rows = [
+      { key: 'north', y: H * 0.30, hue: 266 },
+      { key: 'east', y: H * 0.52, hue: 36 },
+      { key: 'west', y: H * 0.74, hue: 190 }
+    ];
+  }
+
+  function frame(now) {
+    if (ctx && !document.hidden) {
+      ctx.clearRect(0, 0, W, H);
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        ctx.strokeStyle = 'hsla(' + row.hue + ', 60%, 60%, 0.10)';
+        ctx.lineWidth = 1 * dpr;
+        ctx.beginPath();
+        ctx.moveTo(0, row.y);
+        ctx.lineTo(W, row.y);
+        ctx.stroke();
+        var glow = flashes[row.key];
+        var age = glow ? (now - glow) : 99999;
+        if (age < 900) {
+          var a = 1 - age / 900;
+          ctx.strokeStyle = 'hsla(' + row.hue + ', 85%, 68%, ' + (0.5 * a).toFixed(3) + ')';
+          ctx.lineWidth = 2 * dpr;
+          ctx.beginPath();
+          ctx.moveTo(0, row.y);
+          ctx.lineTo(W, row.y);
+          ctx.stroke();
+        }
+      }
+      if (Math.random() < 0.5 && rows.length) {
+        var r = rows[Math.floor(Math.random() * rows.length)];
+        packets.push({ row: r, x: -20, v: (0.12 + Math.random() * 0.16) });
+      }
+      for (var p = packets.length - 1; p >= 0; p--) {
+        var pk = packets[p];
+        pk.x += pk.v * dpr;
+        ctx.fillStyle = 'hsla(' + pk.row.hue + ', 80%, 72%, 0.5)';
+        ctx.fillRect(pk.x, pk.row.y - 3 * dpr, 22 * dpr, 6 * dpr);
+        if (pk.x > W + 30) packets.splice(p, 1);
+      }
+    }
+    window.requestAnimationFrame(frame);
+  }
+
+  if (canvas && ctx && !reduce) {
+    seed();
+    window.addEventListener('resize', seed);
+    window.requestAnimationFrame(frame);
+  }
+
+  function fire(lane) { flashes[lane] = performance.now(); }
+
+  if (!reduce) {
+    var deck = document.getElementById('deck');
+    var tilt = document.getElementById('tilt');
+    if (deck && tilt) {
+      deck.addEventListener('pointermove', function (e) {
+        var r = deck.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5;
+        var py = (e.clientY - r.top) / r.height - 0.5;
+        tilt.style.transform = 'rotateY(' + (px * 6).toFixed(2) + 'deg) rotateX(' + (-py * 6).toFixed(2) + 'deg)';
+      });
+      deck.addEventListener('pointerleave', function () { tilt.style.transform = ''; });
+    }
+  }
+
+  var out = document.querySelector('#out');
+  var cid = document.querySelector('#cid');
+  var ctk = document.querySelector('#ctk');
+  var token = document.getElementById('token');
+
+  function show(value) {
+    out.textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+  }
+  async function request(path, options) {
+    var r = await fetch(path, options);
+    var body = await r.json();
+    if (!r.ok) throw new Error(body.error || 'request failed');
+    return body;
+  }
+
+  document.querySelector('#open').onclick = async function () {
+    try {
+      claim = await request('/api/claims/start', { method: 'POST' });
+      fragments = [];
+      cid.textContent = claim.claimId;
+      ctk.textContent = claim.claimToken;
+      if (token) token.classList.add('issued');
+      var led = document.querySelectorAll('.lane-led');
+      for (var i = 0; i < led.length; i++) led[i].classList.remove('on');
+      show(claim);
+    } catch (e) { show(e.message); }
+  };
+
+  document.querySelectorAll('[data-lane]').forEach(function (button) {
+    button.onclick = async function () {
+      try {
+        if (!claim) throw new Error('Open a claim first.');
+        var body = await request('/api/claims/redeem', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ claimId: claim.claimId, token: claim.claimToken, lane: button.dataset.lane })
+        });
+        fragments.push(body.fragment);
+        fire(button.dataset.lane);
+        var led = button.querySelector('.lane-led');
+        if (led) led.classList.add('on');
+        show({ response: body, fragments: fragments });
+      } catch (e) { show(e.message); }
+    };
+  });
+
+  document.querySelector('#assemble').onclick = async function () {
+    try {
+      if (!claim) throw new Error('Open a claim first.');
+      var body = await request('/api/claims/assemble', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ claimId: claim.claimId, fragments: fragments })
+      });
+      if (token) token.classList.add('settled');
+      show(body);
+    } catch (e) { show(e.message); }
+  };
+})();
+</script>
+</body>
+</html>

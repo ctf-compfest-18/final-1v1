@@ -48,24 +48,7 @@ function parseJson(raw) {
   return data;
 }
 
-const app = `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aurora Manifest Exchange</title><link rel="stylesheet" href="/app.css"></head>
-<body><main><div class="eyebrow">Aurora Freight / Partner Operations</div><h1>Manifest Exchange</h1><p>Prepare a partner manifest for validation, then release its dispatch job through the approval console.</p>
-<div class="grid"><section class="panel"><h2>Partner manifest</h2><textarea id="manifest">{
-  "shipment": "AUR-1048",
-  "scope": "partner",
-  "artifact": "dispatch-note"
-}</textarea><button id="approve">Validate manifest</button><button id="commit" class="secondary">Release approved manifest</button></section>
-<section class="panel"><h2>Exchange activity</h2><p>The validation console accepts partner dispatch notes. Release results are tracked as asynchronous jobs.</p><pre id="output">No activity yet.</pre></section></div>
-</main><script>
-let approvalId = null; let jobId = null;
-const output = document.querySelector('#output');
-const show = value => output.textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
-async function json(url, options) { const r = await fetch(url, options); const body = await r.json(); if (!r.ok) throw new Error(body.error || 'request failed'); return body; }
-document.querySelector('#approve').onclick = async () => { try { const body = document.querySelector('#manifest').value; const result = await json('/api/manifests/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }); approvalId = result.approvalId; show(result); } catch (error) { show(error.message); } };
-document.querySelector('#commit').onclick = async () => { try { if (!approvalId) throw new Error('Validate a manifest first.'); const result = await json('/api/manifests/commit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ approvalId }) }); jobId = result.jobId || null; show(result); if (jobId) setTimeout(poll, 300); } catch (error) { show(error.message); } };
-async function poll() { try { const result = await json('/api/jobs/' + encodeURIComponent(jobId)); show(result); } catch (error) { show(error.message); } }
-</script></body></html>`;
+const app = require('fs').readFileSync(`${__dirname}/views/index.html`, 'utf8');
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);

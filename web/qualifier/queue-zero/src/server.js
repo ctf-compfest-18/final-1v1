@@ -29,15 +29,7 @@ function fragmentFor(claim, lane) {
   return `${lane}.${crypto.createHmac('sha256', signingKey).update(`${claim.id}:${claim.token}:${lane}`).digest('hex').slice(0, 30)}`;
 }
 
-const app = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Queue Zero</title><link rel="stylesheet" href="/app.css"></head>
-<body><main><div class="tag">Northline Claims / Settlement Desk</div><h1>Queue Zero</h1><p>Open a delayed-shipment claim, then redeem its receipt through a settlement lane. Each receipt is expected to settle once.</p><div class="grid"><section class="panel"><h2>Claim receipt</h2><button id="open">Open compensation claim</button><button class="lane" data-lane="north">Redeem through North lane</button><button class="lane" data-lane="east">Redeem through East lane</button><button class="lane" data-lane="west">Redeem through West lane</button><button id="assemble">Assemble release package</button></section><section class="panel"><h2>Activity</h2><pre id="out">No active claim.</pre></section></div></main><script>
-let claim = null, fragments = [];
-const out = document.querySelector('#out'); const show = value => out.textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
-async function request(path, options) { const r = await fetch(path, options); const body = await r.json(); if (!r.ok) throw new Error(body.error || 'request failed'); return body; }
-document.querySelector('#open').onclick = async () => { try { claim = await request('/api/claims/start', {method:'POST'}); fragments = []; show(claim); } catch(e) { show(e.message); } };
-document.querySelectorAll('[data-lane]').forEach(button => button.onclick = async () => { try { if (!claim) throw new Error('Open a claim first.'); const body = await request('/api/claims/redeem', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({claimId:claim.claimId,token:claim.claimToken,lane:button.dataset.lane})}); fragments.push(body.fragment); show({response:body, fragments}); } catch(e) { show(e.message); } });
-document.querySelector('#assemble').onclick = async () => { try { if (!claim) throw new Error('Open a claim first.'); const body = await request('/api/claims/assemble', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({claimId:claim.claimId,fragments})}); show(body); } catch(e) { show(e.message); } };
-</script></body></html>`;
+const app = fs.readFileSync(`${__dirname}/views/index.html`, 'utf8');
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);

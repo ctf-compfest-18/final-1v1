@@ -32,11 +32,7 @@ function send(res, status, body, type = 'application/json; charset=utf-8') {
   res.end(value);
 }
 
-const app = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Snowblind Relay</title><link rel="stylesheet" href="/app.css"></head>
-<body><main><div class="eyebrow">Polar Relay / Incident Continuity</div><h1>Snowblind Relay</h1><p>Provision a public relay session to inspect the current handoff channel. Reviewer releases remain restricted to the incident relay.</p><section class="panel"><button id="session">Provision public relay session</button><pre id="out">No relay session issued.</pre></section></main><script>
-const out = document.querySelector('#out');
-document.querySelector('#session').onclick = async () => { const response = await fetch('/api/session'); out.textContent = JSON.stringify(await response.json(), null, 2); };
-</script></body></html>`;
+const app = fs.readFileSync(`${__dirname}/views/index.html`, 'utf8');
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
