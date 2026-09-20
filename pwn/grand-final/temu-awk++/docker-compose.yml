@@ -6,7 +6,7 @@ services:
     container_name: "temu-awk"
     privileged: true
     ports:
-      - "1337:1337"
+      - "5300:1337"
     read_only: true
     deploy:
       resources:

@@ -16,3 +16,7 @@ It's not necessary to understand the original challenges as this is highly modif
 ## Flag
 
 `COMPFEST18{I_l0v3_r3cycl1ng_ch4ll3ng3s_iT5_g00d_f0r_th3_env1ronm3nt}`
+
+## Password
+
+2e4cabf7113ea16a145e7d25
