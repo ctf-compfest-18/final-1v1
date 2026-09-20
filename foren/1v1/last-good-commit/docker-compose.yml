@@ -1,6 +1,7 @@
 services:
   last-good-commit:
     image: python:3.12-alpine
+    restart: unless-stopped
     environment:
       PORT: "7749"
     command: ["python", "/app/server.py"]

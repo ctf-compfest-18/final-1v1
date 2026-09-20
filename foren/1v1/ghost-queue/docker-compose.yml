@@ -1,6 +1,7 @@
 services:
   ghost-queue:
     image: python:3.12-alpine
+    restart: unless-stopped
     environment:
       PORT: "7713"
     command: ["python", "/app/server.py"]
