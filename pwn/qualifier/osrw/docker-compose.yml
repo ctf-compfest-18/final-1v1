@@ -1,0 +1,12 @@
+services:
+  qualifier:
+    build: ./src
+    restart: always
+    ports:
+      - "5200:1337"
+    read_only: true
+    cap_drop:
+      - ALL
+    pids_limit: 64
+    mem_limit: 128m
+    cpus: 0.5
