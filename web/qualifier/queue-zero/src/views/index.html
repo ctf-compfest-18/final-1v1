@@ -19,28 +19,25 @@
       </svg>
       <div>
         <div class="brand-name">Northline Claims</div>
-        <div class="brand-sub">Settlement Desk</div>
+        <div class="brand-sub">Settlement desk</div>
       </div>
     </div>
-    <div class="rail-top" role="status">
-      <span class="led" aria-hidden="true"></span>
-      <span>queue online</span>
-      <span class="sep" aria-hidden="true"></span>
-      <span class="clock" id="clock">--:--:--Z</span>
+    <div class="link" id="link" role="status">
+      <span class="link-dot" id="link-dot" aria-hidden="true"></span>
+      <span id="link-text">Checking desk</span>
     </div>
   </header>
 
   <section class="hero">
-    <p class="kicker">Compensation queue / delayed shipments</p>
-    <h1>Queue <span class="thin">Zero</span></h1>
-    <p class="lede">Open a delayed-shipment claim, then redeem its receipt through a settlement lane. Each receipt is expected to settle once.</p>
+    <h1>Queue Zero</h1>
+    <p class="lede">Open a compensation claim, redeem its receipt at a settlement lane, then assemble the release package. Each receipt is meant to settle once.</p>
   </section>
 
   <div class="stage" id="deck">
     <section class="card tilt" id="tilt">
       <div class="card-head">
         <h2>Claim receipt</h2>
-        <span class="chip">single-use</span>
+        <span class="note">single-use</span>
       </div>
 
       <div class="token-wrap">
@@ -55,8 +52,8 @@
           </div>
         </div>
         <dl class="token-meta">
-          <div><dt>claim id</dt><dd id="cid">awaiting issue</dd></div>
-          <div><dt>receipt</dt><dd id="ctk">awaiting issue</dd></div>
+          <div><dt>claim id</dt><dd id="cid">not issued</dd></div>
+          <div><dt>receipt</dt><dd id="ctk">not issued</dd></div>
         </dl>
       </div>
 
@@ -69,21 +66,21 @@
       </div>
 
       <button id="assemble" class="secondary" type="button">Assemble release package</button>
-      <p class="hint">Settlement lanes share one receipt and answer asynchronously. Distinct fragments are required for release.</p>
+      <p class="hint">Lanes answer on their own schedule. Releasing needs three distinct fragments from this claim.</p>
     </section>
 
     <section class="card">
       <div class="card-head">
         <h2>Activity</h2>
-        <span class="chip live">live</span>
+        <span class="note" id="state-note">idle</span>
       </div>
-      <pre id="out" class="log" aria-live="polite">No active claim.</pre>
+      <pre id="out" class="log" aria-live="polite">No claim open. Open a claim to begin.</pre>
     </section>
   </div>
 
   <footer class="foot">
-    <span>Northline Claims / settlement operations</span>
-    <span>desk build 4.7.2</span>
+    <span>Northline Claims, settlement operations</span>
+    <span id="host">-</span>
   </footer>
 </div>
 
@@ -94,15 +91,20 @@ var claim = null, fragments = [];
   var reduce = false;
   try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { reduce = false; }
 
-  var clock = document.getElementById('clock');
-  function stamp() {
-    if (!clock) return;
-    var d = new Date();
-    function p(n) { return (n < 10 ? '0' : '') + n; }
-    clock.textContent = p(d.getUTCHours()) + ':' + p(d.getUTCMinutes()) + ':' + p(d.getUTCSeconds()) + 'Z';
+  var hostEl = document.getElementById('host');
+  if (hostEl) hostEl.textContent = window.location.host;
+
+  var link = document.getElementById('link');
+  var linkText = document.getElementById('link-text');
+  function setLink(ok) {
+    if (link) link.classList.toggle('bad', !ok);
+    if (linkText) linkText.textContent = ok ? 'Desk reachable' : 'Desk unreachable';
   }
-  stamp();
-  window.setInterval(stamp, 1000);
+  function ping() {
+    fetch('/health', { cache: 'no-store' }).then(function (r) { setLink(r.ok); }).catch(function () { setLink(false); });
+  }
+  ping();
+  window.setInterval(ping, 15000);
 
   var canvas = document.getElementById('rail');
   var ctx = canvas ? canvas.getContext('2d') : null;
@@ -116,19 +118,19 @@ var claim = null, fragments = [];
     canvas.style.width = window.innerWidth + 'px';
     canvas.style.height = window.innerHeight + 'px';
     rows = [
-      { key: 'north', y: H * 0.30, hue: 266 },
-      { key: 'east', y: H * 0.52, hue: 36 },
-      { key: 'west', y: H * 0.74, hue: 190 }
+      { key: 'north', y: H * 0.32 },
+      { key: 'east', y: H * 0.54 },
+      { key: 'west', y: H * 0.76 }
     ];
   }
 
   function frame(now) {
     if (ctx && !document.hidden) {
-      ctx.clearRect(0, 0, W, H);
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      ctx.clearRect(0, 0, W, H);
       for (var i = 0; i < rows.length; i++) {
         var row = rows[i];
-        ctx.strokeStyle = 'hsla(' + row.hue + ', 60%, 60%, 0.10)';
+        ctx.strokeStyle = 'rgba(230,161,90,.09)';
         ctx.lineWidth = 1 * dpr;
         ctx.beginPath();
         ctx.moveTo(0, row.y);
@@ -137,8 +139,7 @@ var claim = null, fragments = [];
         var glow = flashes[row.key];
         var age = glow ? (now - glow) : 99999;
         if (age < 900) {
-          var a = 1 - age / 900;
-          ctx.strokeStyle = 'hsla(' + row.hue + ', 85%, 68%, ' + (0.5 * a).toFixed(3) + ')';
+          ctx.strokeStyle = 'rgba(230,161,90,' + (0.4 * (1 - age / 900)).toFixed(3) + ')';
           ctx.lineWidth = 2 * dpr;
           ctx.beginPath();
           ctx.moveTo(0, row.y);
@@ -146,15 +147,15 @@ var claim = null, fragments = [];
           ctx.stroke();
         }
       }
-      if (Math.random() < 0.5 && rows.length) {
+      if (Math.random() < 0.4 && rows.length) {
         var r = rows[Math.floor(Math.random() * rows.length)];
-        packets.push({ row: r, x: -20, v: (0.12 + Math.random() * 0.16) });
+        packets.push({ row: r, x: -20, v: 0.1 + Math.random() * 0.12 });
       }
       for (var p = packets.length - 1; p >= 0; p--) {
         var pk = packets[p];
         pk.x += pk.v * dpr;
-        ctx.fillStyle = 'hsla(' + pk.row.hue + ', 80%, 72%, 0.5)';
-        ctx.fillRect(pk.x, pk.row.y - 3 * dpr, 22 * dpr, 6 * dpr);
+        ctx.fillStyle = 'rgba(230,161,90,.4)';
+        ctx.fillRect(pk.x, pk.row.y - 3 * dpr, 20 * dpr, 6 * dpr);
         if (pk.x > W + 30) packets.splice(p, 1);
       }
     }
@@ -177,7 +178,7 @@ var claim = null, fragments = [];
         var r = deck.getBoundingClientRect();
         var px = (e.clientX - r.left) / r.width - 0.5;
         var py = (e.clientY - r.top) / r.height - 0.5;
-        tilt.style.transform = 'rotateY(' + (px * 6).toFixed(2) + 'deg) rotateX(' + (-py * 6).toFixed(2) + 'deg)';
+        tilt.style.transform = 'rotateY(' + (px * 5).toFixed(2) + 'deg) rotateX(' + (-py * 5).toFixed(2) + 'deg)';
       });
       deck.addEventListener('pointerleave', function () { tilt.style.transform = ''; });
     }
@@ -187,10 +188,12 @@ var claim = null, fragments = [];
   var cid = document.querySelector('#cid');
   var ctk = document.querySelector('#ctk');
   var token = document.getElementById('token');
+  var stateNote = document.getElementById('state-note');
 
   function show(value) {
     out.textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
   }
+  function note(text) { if (stateNote) stateNote.textContent = text; }
   async function request(path, options) {
     var r = await fetch(path, options);
     var body = await r.json();
@@ -207,6 +210,7 @@ var claim = null, fragments = [];
       if (token) token.classList.add('issued');
       var led = document.querySelectorAll('.lane-led');
       for (var i = 0; i < led.length; i++) led[i].classList.remove('on');
+      note('claim open');
       show(claim);
     } catch (e) { show(e.message); }
   };
@@ -224,6 +228,7 @@ var claim = null, fragments = [];
         fire(button.dataset.lane);
         var led = button.querySelector('.lane-led');
         if (led) led.classList.add('on');
+        note(fragments.length + ' of 3 fragments');
         show({ response: body, fragments: fragments });
       } catch (e) { show(e.message); }
     };
@@ -238,6 +243,7 @@ var claim = null, fragments = [];
         body: JSON.stringify({ claimId: claim.claimId, fragments: fragments })
       });
       if (token) token.classList.add('settled');
+      note('assembled');
       show(body);
     } catch (e) { show(e.message); }
   };

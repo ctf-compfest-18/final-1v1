@@ -14,32 +14,29 @@
     <div class="brand">
       <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
         <path d="M20 5v30M7 12l26 16M33 12 7 28" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-        <path d="M20 12l4 4-4 4-4-4zM11 23l3 3-3 3-3-3zM31 23l3 3-3 3-3-3z" fill="none" stroke="currentColor" stroke-width="1"/>
+        <path d="M20 12l4 4-4 4-4-4z" fill="none" stroke="currentColor" stroke-width="1"/>
       </svg>
       <div>
         <div class="brand-name">Polar Relay</div>
-        <div class="brand-sub">Incident Continuity</div>
+        <div class="brand-sub">Incident continuity</div>
       </div>
     </div>
-    <div class="rail-top" role="status">
-      <span class="led" aria-hidden="true"></span>
-      <span>channel snowblind</span>
-      <span class="sep" aria-hidden="true"></span>
-      <span class="clock" id="clock">--:--:--Z</span>
+    <div class="link" id="link" role="status">
+      <span class="link-dot" id="link-dot" aria-hidden="true"></span>
+      <span id="link-text">Checking relay</span>
     </div>
   </header>
 
   <section class="hero">
-    <p class="kicker">Low-visibility operations / relay console</p>
-    <h1>Snowblind <span class="thin">Relay</span></h1>
-    <p class="lede">Provision a public relay session to inspect the current handoff channel. Reviewer releases remain restricted to the incident relay.</p>
+    <h1>Snowblind Relay</h1>
+    <p class="lede">Public sessions read relay status. Releasing a sealed handoff stays with the incident reviewer profile.</p>
   </section>
 
   <div class="stage" id="deck">
     <section class="card tilt" id="tilt">
       <div class="card-head">
         <h2>Relay session</h2>
-        <span class="chip" id="status-chip">idle</span>
+        <span class="note" id="state-note">idle</span>
       </div>
 
       <div class="beacon-stage" aria-hidden="true">
@@ -48,26 +45,25 @@
           <span class="ring r2"></span>
           <span class="ring r3"></span>
           <span class="core"></span>
-          <span class="halo"></span>
         </div>
       </div>
 
       <button id="session" type="button">Provision public relay session</button>
-      <p class="hint">Public sessions are scoped to relay inspection. Handoff release requires the incident reviewer profile.</p>
+      <p class="hint">Public sessions are read-only. Reviewer releases run against the incident relay only.</p>
     </section>
 
     <section class="card">
       <div class="card-head">
         <h2>Relay output</h2>
-        <span class="chip live">live</span>
+        <span class="note">json</span>
       </div>
-      <pre id="out" class="log" aria-live="polite">No relay session issued.</pre>
+      <pre id="out" class="log" aria-live="polite">No session yet. Provision a public session to read relay status.</pre>
     </section>
   </div>
 
   <footer class="foot">
-    <span>Polar Relay / incident continuity</span>
-    <span>relay build 3.4.1</span>
+    <span>Polar Relay, incident continuity</span>
+    <span id="host">-</span>
   </footer>
 </div>
 
@@ -77,15 +73,20 @@
   var reduce = false;
   try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { reduce = false; }
 
-  var clock = document.getElementById('clock');
-  function stamp() {
-    if (!clock) return;
-    var d = new Date();
-    function p(n) { return (n < 10 ? '0' : '') + n; }
-    clock.textContent = p(d.getUTCHours()) + ':' + p(d.getUTCMinutes()) + ':' + p(d.getUTCSeconds()) + 'Z';
+  var hostEl = document.getElementById('host');
+  if (hostEl) hostEl.textContent = window.location.host;
+
+  var link = document.getElementById('link');
+  var linkText = document.getElementById('link-text');
+  function setLink(ok) {
+    if (link) link.classList.toggle('bad', !ok);
+    if (linkText) linkText.textContent = ok ? 'Relay reachable' : 'Relay unreachable';
   }
-  stamp();
-  window.setInterval(stamp, 1000);
+  function ping() {
+    fetch('/health', { cache: 'no-store' }).then(function (r) { setLink(r.ok); }).catch(function () { setLink(false); });
+  }
+  ping();
+  window.setInterval(ping, 15000);
 
   var canvas = document.getElementById('storm');
   var ctx = canvas ? canvas.getContext('2d') : null;
@@ -99,14 +100,14 @@
     canvas.style.width = window.innerWidth + 'px';
     canvas.style.height = window.innerHeight + 'px';
     flakes = [];
-    for (var i = 0; i < 130; i++) {
+    for (var i = 0; i < 110; i++) {
       flakes.push({
         x: Math.random() * W,
         y: Math.random() * H,
-        r: (Math.random() * 1.7 + 0.4) * dpr,
-        v: (0.25 + Math.random() * 0.65),
-        drift: (0.35 + Math.random() * 0.7),
-        a: 0.15 + Math.random() * 0.5
+        r: (Math.random() * 1.5 + 0.4) * dpr,
+        v: 0.2 + Math.random() * 0.55,
+        drift: 0.3 + Math.random() * 0.6,
+        a: 0.12 + Math.random() * 0.4
       });
     }
   }
@@ -118,11 +119,11 @@
       for (var i = 0; i < flakes.length; i++) {
         var f = flakes[i];
         f.y += f.v * dpr;
-        f.x += f.drift * dpr * 0.6;
+        f.x += f.drift * dpr * 0.5;
         if (f.y > H + 6) { f.y = -6; f.x = Math.random() * W; }
         if (f.x > W + 6) f.x = -6;
         ctx.globalAlpha = f.a;
-        ctx.fillStyle = '#dff4fb';
+        ctx.fillStyle = '#d7ecf2';
         ctx.beginPath();
         ctx.arc(f.x, f.y, f.r, 0, 6.2832);
         ctx.fill();
@@ -131,13 +132,12 @@
       for (var p = pulses.length - 1; p >= 0; p--) {
         var pu = pulses[p];
         var age = now - pu.t;
-        if (age > 1600) { pulses.splice(p, 1); continue; }
-        var k = age / 1600;
-        ctx.globalAlpha = (1 - k) * 0.5;
-        ctx.strokeStyle = '#78e4f0';
-        ctx.lineWidth = 1.4 * dpr;
+        if (age > 1500) { pulses.splice(p, 1); continue; }
+        ctx.globalAlpha = (1 - age / 1500) * 0.35;
+        ctx.strokeStyle = '#7fd6e6';
+        ctx.lineWidth = 1.2 * dpr;
         ctx.beginPath();
-        ctx.arc(pu.x, pu.y, k * 260 * dpr, 0, 6.2832);
+        ctx.arc(pu.x, pu.y, (age / 1500) * 220 * dpr, 0, 6.2832);
         ctx.stroke();
       }
       ctx.globalAlpha = 1;
@@ -153,7 +153,7 @@
 
   function pulse() {
     if (!canvas) return;
-    pulses.push({ x: W * 0.18, y: H * 0.5, t: performance.now() });
+    pulses.push({ x: W * 0.2, y: H * 0.5, t: performance.now() });
   }
 
   if (!reduce) {
@@ -165,10 +165,10 @@
         var r = deck.getBoundingClientRect();
         var px = (e.clientX - r.left) / r.width - 0.5;
         var py = (e.clientY - r.top) / r.height - 0.5;
-        tilt.style.transform = 'rotateY(' + (px * 6).toFixed(2) + 'deg) rotateX(' + (-py * 6).toFixed(2) + 'deg)';
+        tilt.style.transform = 'rotateY(' + (px * 5).toFixed(2) + 'deg) rotateX(' + (-py * 5).toFixed(2) + 'deg)';
         if (beacon) {
-          beacon.style.setProperty('--ry', (px * 40).toFixed(1) + 'deg');
-          beacon.style.setProperty('--rx', (-py * 30).toFixed(1) + 'deg');
+          beacon.style.setProperty('--ry', (px * 36).toFixed(1) + 'deg');
+          beacon.style.setProperty('--rx', (-py * 26).toFixed(1) + 'deg');
         }
       });
       deck.addEventListener('pointerleave', function () {
@@ -179,7 +179,7 @@
   }
 
   var out = document.querySelector('#out');
-  var chip = document.getElementById('status-chip');
+  var stateNote = document.getElementById('state-note');
 
   function show(value) {
     out.textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
@@ -190,7 +190,7 @@
       var response = await fetch('/api/session');
       var body = await response.json();
       show(body);
-      if (chip) { chip.textContent = body.profile || 'issued'; chip.classList.add('ok'); }
+      if (stateNote) stateNote.textContent = body.profile || 'issued';
       pulse();
     } catch (e) { show(e.message); }
   };
