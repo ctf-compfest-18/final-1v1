@@ -1,0 +1,11 @@
+FROM ubuntu@sha256:4f838adc7181d9039ac795a7d0aba05a9bd9ecd480d294483169c5def983b64d AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev
+WORKDIR /src
+COPY chall.c ./
+RUN gcc chall.c -O3 -s -o chall
+
+FROM scratch
+COPY --from=builder /src/chall /chall
+COPY --from=builder /lib64/ld-linux-x86-64.so.2 /ld-linux-x86-64.so.2
+COPY --from=builder /lib/x86_64-linux-gnu/libc.so.6 /libc.so.6
