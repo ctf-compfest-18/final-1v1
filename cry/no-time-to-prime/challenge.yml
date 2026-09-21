@@ -1,0 +1,9 @@
+name: No Time to Prime
+author: racoonhunter
+category: Cryptography
+type: standard
+description: "Three recovery tokens are missing from the vault. Recover them from the diagnostic dumps and unlock the final flag."
+flags:
+  - "COMPFEST18{no_time_to_prime_3513d6df800cff644f6504c37ca41817}"
+files:
+  - public/participant.zip
