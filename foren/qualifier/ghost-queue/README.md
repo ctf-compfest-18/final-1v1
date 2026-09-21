@@ -9,7 +9,14 @@
 - Public attachment: `public/ghost-queue.zip`
 - Dist password: `GQ-7mP4xV2qL9sR`
 
-The password is included here for committee distribution. The encrypted public ZIP contains one participant-facing `README.md` and the responder evidence only.
+The password is included here for committee distribution. The public dist is `public/README.md` (participant README: name, author, description, connection, hint 1) next to the password-protected evidence ZIP `public/ghost-queue.zip`. Only one hint is released.
+
+## Internal hints (not released)
+
+Only hint 1 is published. Hints 2 and 3 are kept here for organizers and the official writeup:
+
+2. Correlate the job in the collection log with the process and its descriptors.
+3. Hash the exact recovered bytes, including their final newline.
 
 ## Local QA
 
