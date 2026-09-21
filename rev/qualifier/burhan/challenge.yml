@@ -1,0 +1,21 @@
+name: "Burhan"
+author: "demtcsre"
+category: Reverse Engineering
+description: |
+  Burhan, burung hantu itu, sudah lama dipelihara anak-anak lab. Dia tidak
+  bisa bicara. Sodorkan kunci, dia cuma mengangguk atau menggeleng, dan tidak
+  pernah repot menjelaskan kenapa.
+flags:
+  - COMPFEST18{burhan_come_back}
+tags:
+  # - rev
+  # - android
+  # - feistel
+value: 500
+type: dynamic
+decay: 20
+decay-function: logarithmic
+minimum: 100
+files:
+  - burhan.zip
+state: hidden

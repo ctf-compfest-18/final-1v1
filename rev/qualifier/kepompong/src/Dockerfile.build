@@ -1,0 +1,6 @@
+FROM ubuntu@sha256:b8b6ee6aa931ecd9d0d952abc34dc0e5f7c6a30c6bb71b079fe399fde0329c02
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        gcc libc6-dev binutils xxd && apt-get clean
+WORKDIR /src
+COPY stage2.c chall.c build.sh ./
+RUN ./build.sh

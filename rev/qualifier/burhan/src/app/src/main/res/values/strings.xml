@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Burhan</string>
+    <string name="hint">COMPFEST18{...}</string>
+    <string name="check">Tanya Burhan</string>
+    <string name="idle">Burhan sedang mengawasi.</string>
+    <string name="ok">Burhan mengangguk.</string>
+    <string name="bad">Burhan menggeleng.</string>
+</resources>
