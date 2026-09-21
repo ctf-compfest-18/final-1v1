@@ -1,0 +1,12 @@
+services:
+  ruang-baca:
+    build: .
+    ports:
+      - "5600:5600"
+    privileged: true
+    restart: unless-stopped
+    environment:
+      JAIL_TIME: "600"
+      JAIL_MEM: "256M"
+      JAIL_PIDS: "32"
+      JAIL_CPU: "100"

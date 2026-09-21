@@ -1,0 +1,20 @@
+name: "Kepompong"
+author: "demtcsre"
+category: Reverse Engineering
+description: |
+  Berkasnya kecil. Bongkar isinya dan hampir tidak ada apa-apa di dalam
+  sana. Programnya tetap jalan, tetap menjawab. Mekar, atau belum.
+flags:
+  - COMPFEST18{dump_th3_rwx_p4g3_th3n_x0r_1t_b4ck_0nc3!}
+tags:
+  # - rev
+  # - self-modifying
+  # - mmap
+value: 500
+type: dynamic
+decay: 20
+decay-function: logarithmic
+minimum: 100
+files:
+  - kepompong.zip
+state: hidden
