@@ -1,0 +1,40 @@
+name: "Aurora Manifest Exchange"
+author: "PolarBear7"
+category: web
+
+description: |
+  Aurora Freight has moved partner shipment approvals into a new manifest exchange.
+
+  The public validation console and the internal dispatch worker were migrated separately. Operations reports that the two components do not always agree on a manifest after approval.
+
+  Review the exchange and recover the sealed export label.
+
+  Service: http://{{ IP_SERVER }}:4007
+
+flags:
+  - COMPFEST18{aurora_manifest_826b51dc17d84ab0ec6055ce3c07e43e5830e16f4c9b3818ba8b63cd47e91be8}
+
+flag_delivery_mode: environment
+
+tags:
+  - web
+  - finals
+  - 1v1
+  - json
+  - parser-differential
+
+value: 500
+type: container
+scoring-type: dynamic
+decay: 20
+decay-function: logarithmic
+minimum: 100
+
+state: hidden
+attachment: public/aurora-manifest-exchange.zip
+pids-limit: 128
+image: ghcr.io/ctf-compfest-18/finals-web-aurora-manifest-exchange:latest
+
+expose:
+  containerPort: 3000
+  targetPort: 3000

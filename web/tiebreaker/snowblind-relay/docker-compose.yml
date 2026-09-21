@@ -1,0 +1,17 @@
+services:
+  chall:
+    build: .
+    environment:
+      PORT: 3000
+      FLAG: ${FLAG:-COMPFEST18{snowblind_relay_local_placeholder_not_for_submission}}
+      JWT_SECRET: ${JWT_SECRET:-icefield-borealis-semaphore}
+    ports:
+      - "${PORT_MAP:-4021}:3000"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
