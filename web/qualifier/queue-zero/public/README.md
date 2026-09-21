@@ -1,6 +1,8 @@
 # Queue Zero
 
-author: PolarBear7
+by PolarBear7
+
+---
 
 ## Description
 
@@ -8,10 +10,10 @@ Northline Claims is rolling out a compensation queue for delayed shipments. A si
 
 Audit the claim flow and recover the sealed release label.
 
-## Hints
+## Hint
 
-- A claim receipt is intended to be single-use, but inspect the exact order of validation and state changes.
+A claim receipt is intended to be single-use, but inspect the exact order of validation and state changes.
 
-## Connection Info
+## Connection
 
 http://34.1.203.129:4013

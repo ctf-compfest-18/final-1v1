@@ -1,6 +1,8 @@
 # Aurora Manifest Exchange
 
-author: PolarBear7
+by PolarBear7
+
+---
 
 ## Description
 
@@ -8,10 +10,10 @@ Aurora Freight has moved partner shipment approvals into a new manifest exchange
 
 Audit the exchange and recover the sealed export label.
 
-## Hints
+## Hint
 
-- Compare what the validation stage reads with what the release stage reads.
+Compare what the validation stage reads with what the release stage reads.
 
-## Connection Info
+## Connection
 
 http://34.1.203.129:4007
