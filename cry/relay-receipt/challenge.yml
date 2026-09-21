@@ -1,0 +1,9 @@
+name: Relay Receipt
+author: racoonhunter
+category: Cryptography
+type: standard
+description: "Two directories, one delivery, two receipts. The issuer thought they were separate enough. Can you open the vault?"
+flags:
+  - "COMPFEST18{thr33_receipts_0ne_broken_relay_9d81a7c2}"
+files:
+  - public/participant.zip
