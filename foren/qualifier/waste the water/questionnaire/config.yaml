@@ -1,0 +1,50 @@
+config:
+  header_text: |-
+    waste the water
+    by uje
+  win_text: "Congratulation"
+  case_sensitive: false
+  can_skip: false
+  array_delimiter: ","
+  numbering: "global"
+
+ui:
+  panel_style: "cyan"
+  header_style: "bold white"
+  section_style: "bold yellow"
+  border_type: "rounded"
+
+theme:
+  info: "italic cyan"
+  error: "bold red"
+  success: "bold green"
+  question: "bold white"
+  prompt: "bold cyan"
+
+sections:
+  - name: "waste the water"
+    questions:
+      - question: "What is the name of the packer used to compress this executable?"
+        answer: "PyInstaller"
+        config:
+          format: "Packer name"
+      
+      - question: "What is the exact filename of the .pyc entry point?"
+        answer: "jazzKILL.pyc"
+        config:
+          format: "xxx.pyc"
+      
+      - question: "What is the exact filename of the cryptographic key that you must recover to build a working decryptor?"
+        answer: "secret.key"
+        config:
+          format: "filename"
+      
+      - question: "Which specific Windows API function does the malware call to forcefully change the victim's desktop wallpaper?"
+        answer: SystemParametersInfoW"
+        config:
+          format: "API name"
+      
+      - question: "What is the secret PIN from inside of the encrypted file?"
+        answer: "341601"
+        config:
+          format: "XXXXXX"
