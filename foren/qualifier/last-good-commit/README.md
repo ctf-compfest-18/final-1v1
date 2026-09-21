@@ -9,7 +9,14 @@
 - Public attachment: `public/last-good-commit.zip`
 - Dist password: `LGC-4nZ8pQ6vK2dM`
 
-The password is included here for committee distribution. The encrypted public ZIP contains one participant-facing `README.md` and the database evidence only.
+The password is included here for committee distribution. The public dist is `public/README.md` (participant README: name, author, description, connection, hint 1) next to the password-protected evidence ZIP `public/last-good-commit.zip`. Only one hint is released.
+
+## Internal hints (not released)
+
+Only hint 1 is published. Hints 2 and 3 are kept here for organizers and the official writeup:
+
+2. A WAL frame with a nonzero database-size field ends a transaction. Reconstruct the state at each commit boundary on copies.
+3. Match the warehouse record, then include that version's receipt, as lowercase hex, in the proof.
 
 ## Local QA
 
