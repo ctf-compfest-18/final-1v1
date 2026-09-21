@@ -1,0 +1,4 @@
+src/build/
+src/app/build/
+src/.gradle/
+src/local.properties
