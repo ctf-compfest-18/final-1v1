@@ -20,8 +20,8 @@ My fair lady.
 Tingkat kesulitan soal: easy
 
 ## Hints
-* Sixteen known bytes reveal four consecutive generator outputs
-* Subtract two recurrence equations to eliminate the increment
+* Sixteen known bytes reveal four consecutive generator outputs and then subtract two recurrence equations to eliminate the increment
+* hint
 * hint dst.
 
 ## Tags
