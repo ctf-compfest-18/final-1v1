@@ -1,0 +1,18 @@
+name: "final-destination"
+author: "jay"
+category: "web"
+
+description: |
+  The gate only allows **visitor** routes, but the sorting system may not always read a ticket the same way. Perhaps one route is not the only thing a ticket can carry. Find a way to route your ticket to **conductor** and retrieve the flag.
+
+flags:
+  - COMPFEST18{8be3c5825e5e572ab0bfd34c2673763343d789fc387c7ae71cc82161db9dd556}
+
+value: 500
+type: container
+scoring-type: dynamic
+decay: 20
+minimum: 100
+decay-function: logarithmic
+expose:
+  containerPort: 8080
