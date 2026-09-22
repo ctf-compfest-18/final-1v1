@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body %}
+  <h1>Maestro's Word</h1>
+  <p>{{ motd | safe }}</p>
+  If you don't see the "Maestro's Word" try refreshing the page or check back later for tomorrow's performance!
+  {% if flag %}
+    <p>{{ flag }}</p>
+  {% else %}
+    <p>Enjoy this picture of a cute fletcher during intermission:</p>
+    <img
+      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmC_m9x13WWTmbeAtLEbcPfCMCs6BnDCpixg&s"
+      alt="squid"
+      loading="lazy"
+    />
+  {% endif %}
+{% endblock %}

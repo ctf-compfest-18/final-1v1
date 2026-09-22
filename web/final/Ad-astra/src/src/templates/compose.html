@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block body %}
+  <h2>Compose a Sonata</h2>
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% endif %}
+  <form method="post">
+    <div class="row">
+      <label>To: <input name="to" placeholder="Maestro Username" /></label>
+    </div>
+    <div class="row">
+      <label>Composition:</label>
+      <br />
+      <textarea name="body" placeholder="Write your melodious notes here..."></textarea>
+    </div>
+    <div class="row">
+      <button type="submit">Send to Recipient</button>
+    </div>
+  </form>
+  <p>Notes are anonymous: only the harmonious message contents are shown in the archives.</p>
+{% endblock %}
