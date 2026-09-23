@@ -5,5 +5,5 @@ services:
       dockerfile: Dockerfile
     container_name: compfest-500
     ports:
-      - "8080:8080"
+      - "4200:4200"
     restart: unless-stopped
