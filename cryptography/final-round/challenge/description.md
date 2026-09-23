@@ -1,8 +1,6 @@
 # Close Primes
 
 - **Category:** Cryptography
-- **Difficulty:** Medium
-- **Time Limit:** 20 minutes
 
 ---
 
