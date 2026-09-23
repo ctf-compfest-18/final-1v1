@@ -13,5 +13,5 @@ ENV PORT=8080
 RUN addgroup -S app && adduser -S app -G app
 USER app
 
-EXPOSE 8080
+EXPOSE 4203
 CMD ["npm", "start"]
