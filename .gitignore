@@ -1,0 +1,14 @@
+**/__pycache__/
+**/.build/
+**/.buildtmp/
+.qc/
+
+# organizer material that must never be committed
+_private/
+.solvers/
+**/.solvers/
+**/solvers/
+**/solve*.py
+**/solver*.py
+**/answer_key*
+**/*.solution.*

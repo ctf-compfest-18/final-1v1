@@ -1,0 +1,29 @@
+services:
+  admin-will-read-it:
+    build: .
+    pull_policy: build
+    image: ggmu
+    container_name: ggmu
+    restart: unless-stopped
+    environment:
+      FLAG: COMPFEST18{plsss_wok_jangan_buat_minggu_gw_suram_lagi_gegara_nontonin_lu_kalah_mulu}
+      SESSION_SECRET: fafaafaf
+      BOT_TOKEN: agfaeowfjoiaewjfw
+      PORT: "3000"
+    ports:
+      - "4451:3000"
+    read_only: true
+    tmpfs:
+      - /tmp:size=192m
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M

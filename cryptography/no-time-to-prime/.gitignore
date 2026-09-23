@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.venv/
+.sage/
+.DS_Store
+src/probset/secrets/verification.json
+src/probset/secrets/stress-report.json

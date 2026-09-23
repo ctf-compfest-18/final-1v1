@@ -1,0 +1,7 @@
+services:
+  web:
+    build: ./src
+    ports:
+      - "4123:5024"
+      - "4124:5025"
+    restart: unless-stopped

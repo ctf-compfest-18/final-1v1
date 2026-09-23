@@ -1,0 +1,11 @@
+FROM ubuntu@sha256:4f838adc7181d9039ac795a7d0aba05a9bd9ecd480d294483169c5def983b64d AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev
+WORKDIR /src
+COPY chall.c readflag.c ./
+RUN gcc chall.c -o chall -O2 -fPIE -pie -fstack-protector-all -D_FORTIFY_SOURCE=2 -Wl,-z,relro,-z,now,-z,noexecstack && \
+    gcc readflag.c -o readflag -O2 -fPIE -pie -fstack-protector-all -D_FORTIFY_SOURCE=2 -Wl,-z,relro,-z,now,-z,noexecstack
+
+FROM scratch
+COPY --from=builder /src/chall /chall
+COPY --from=builder /src/readflag /readflag
