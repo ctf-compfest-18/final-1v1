@@ -1,9 +1,9 @@
 from pwn import *
 
 # If running locally:
-p = process(['python3', 'chall.py'])
+#p = process(['python3', 'chall.py'])
 # If remote:
-# p = remote('host', port)
+p = remote('localhost', 7500)
 
 iv = b'whatisthisfor???'
 
