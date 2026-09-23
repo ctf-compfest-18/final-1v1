@@ -1,8 +1,8 @@
 services:
-    simple-aes:
+    idk:
       build: .
       ports:
-        - 7500:8080
+        - 3321:8080
       container_name: idk
       restart: on-failure
       deploy:
