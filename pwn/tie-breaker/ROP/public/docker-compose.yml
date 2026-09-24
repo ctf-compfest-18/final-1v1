@@ -2,7 +2,7 @@ services:
   challenge:
     build: .
     ports:
-      - "1337:5000"
+      - "5200:5000"
 
     privileged: true
 

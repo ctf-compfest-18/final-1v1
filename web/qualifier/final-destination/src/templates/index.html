@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Last Stamp Wins</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="station">
+    <section class="board">
+      <p class="kicker">terminal sorter</p>
+      <h1>Last Stamp Wins</h1>
+      <button id="ticket" type="button">Print visitor ticket</button>
+      <pre id="receipt">No ticket printed.</pre>
+    </section>
+  </main>
+  <script>
+    document.querySelector("#ticket").addEventListener("click", async () => {
+      const response = await fetch("/dispatch?route=visitor");
+      document.querySelector("#receipt").textContent = JSON.stringify(await response.json(), null, 2);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+name: "500"
+author: "jay"
+category: "web"
+
+description: |
+  Rushed to production, the web app may have exposed something it shouldn't!
+  The flag is located at /flag.
+  username: compfest 
+  password: compf3st18_f1nal
+
+flags:
+  - COMPFEST18{c7c97cd3c69f42d7d81881c2de8871829ef81b3fc9c3389336cba17938dc170c}
+
+value: 500
+type: container
+scoring-type: dynamic
+decay: 20
+minimum: 100
+decay-function: logarithmic
+expose:
+  containerPort: 8080

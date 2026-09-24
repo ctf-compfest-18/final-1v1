@@ -1,4 +1,3 @@
-# Konfigurasi dibaca dari .env (folder ini). Default mengacu ke nilai di bawah.
 services:
   web:
     build: ./web

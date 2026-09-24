@@ -1,0 +1,9 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: compfest-final-destination
+    ports:
+      - "4201:4201"
+    restart: unless-stopped
