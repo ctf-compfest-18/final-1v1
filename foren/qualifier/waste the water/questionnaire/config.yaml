@@ -40,7 +40,7 @@ sections:
           format: "filename"
       
       - question: "Which specific Windows API function does the malware call to forcefully change the victim's desktop wallpaper?"
-        answer: SystemParametersInfoW"
+        answer: "SystemParametersInfoW"
         config:
           format: "API name"
       

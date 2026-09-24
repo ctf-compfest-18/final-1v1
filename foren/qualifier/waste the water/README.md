@@ -7,7 +7,7 @@ by uje
 ## Flag
 
 ```
-COMPFEST18{s1mpl3_m4lw4r3_4n41lys15_y0u_ju5t_s4v3_th3_w4t3r_<ran_16>}
+COMPFEST18{s1mpl3_m4lw4r3_4n41lys15_y0u_ju5t_s4v3_th3_w4t3r}
 ```
 
 ## Description

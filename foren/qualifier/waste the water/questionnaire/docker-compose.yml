@@ -1,0 +1,10 @@
+services:
+  questionnaire:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "7100:1603"
+    environment:
+      - FLAG="COMPFEST18{s1mpl3_m4lw4r3_4n41lys15_y0u_ju5t_s4v3_th3_w4t3r}"
