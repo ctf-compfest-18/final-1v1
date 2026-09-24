@@ -2,8 +2,8 @@ services:
   web:
     build: ./web
     environment:
-      FLAG: ${FLAG:-dev_flag}}
-      ADMIN_TOKEN: ${ADMIN_TOKEN:?ADMIN_TOKEN in .env}
+      FLAG: ${FLAG:-COMPFEST18{plsss_wok_jangan_buat_minggu_gw_suram_lagi_gegara_nontonin_lu_kalah_mulu}}}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-9r90ur0qmr093mr0mc932mrcq2mrr2c30qru32}
       BOT_URL: http://bot:3000
       REPORT_COOLDOWN_SECONDS: ${REPORT_COOLDOWN_SECONDS:-60}
     ports:
