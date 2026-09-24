@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RONGAWI - {{ course.code }} - Detail Mata Kuliah</title>
+    <style>
+        *{box-sizing:border-box} body{font:16px Arial,sans-serif;background:#fff8d8;color:#17213b;margin:0}
+        header{background:#f4c430;color:#17213b;padding:20px 9%;font-size:24px;font-weight:bold}
+        header a{color:#17213b;text-decoration:none}
+        main{max-width:760px;margin:42px auto;padding:0 24px}.card{background:#fff;padding:30px;border-radius:14px;box-shadow:0 5px 22px #e4dcae}
+        h1{margin:0 0 10px;font-size:32px}.code{color:#8a6900;font-weight:bold}.row{padding:15px 0;border-bottom:1px solid #eee2ad}
+        .row:last-child{border-bottom:0}.label{display:block;color:#65708a;font-size:13px;text-transform:uppercase;margin-bottom:5px}
+        a{display:inline-block;margin-top:24px;color:#17213b;font-weight:bold}
+    </style>
+</head>
+<body>
+    <header><a href="/dashboard/">RONGAWI</a></header>
+    <main>
+        <section class="card">
+            <div class="code">{{ course.code }}</div>
+            <h1>{{ course.name }}</h1>
+            <div class="row"><span class="label">Bobot</span>{{ course.credits }} SKS</div>
+            <div class="row"><span class="label">Jadwal</span>{{ course.schedule }}</div>
+            <a href="/dashboard/">&larr; Kembali ke dashboard</a>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,21 @@
+name: "viewwwwwwwwww"
+author: "jay"
+category: "web"
+
+description: |
+  A small release dashboard keeps project checks inside each user's workspace.
+
+flags:
+  - COMPFEST18{GUS_RIZAL:okee_3zz_s3mua_soa1mu_ma5}
+
+hint:
+  - name.slice(0, 32) -> http://${project.name}.preview.local/status
+
+value: 500
+type: container
+scoring-type: dynamic
+decay: 20
+minimum: 100
+decay-function: logarithmic
+expose:
+  containerPort: 8080

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= mode === "register" ? "Create account" : "Sign in" %> | Harbor Deck</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body class="auth-body">
+    <main class="auth-shell">
+      <section class="auth-copy">
+        <div class="brand auth-brand">
+          <div class="brand-mark">H</div>
+          <div>
+            <strong>Harbor Deck</strong>
+            <span>Release operations</span>
+          </div>
+        </div>
+        <h1><%= mode === "register" ? "Create your workspace" : "Return to your workspace" %></h1>
+        <p>Project queues, check history, and responses are scoped to the account that created them.</p>
+      </section>
+
+      <form class="auth-card" method="post" action="/<%= mode %>">
+        <div>
+          <h2><%= mode === "register" ? "Register" : "Login" %></h2>
+          <p class="hint">
+            <% if (mode === "register") { %>
+              Choose a handle and password for this match instance.
+            <% } else { %>
+              Use the account you created for this match instance.
+            <% } %>
+          </p>
+        </div>
+
+        <label for="username">Username</label>
+        <input id="username" name="username" value="<%= username %>" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="<%= mode === "register" ? "new-password" : "current-password" %>" required>
+
+        <% if (error) { %>
+          <p class="message error"><%= error %></p>
+        <% } %>
+
+        <button type="submit"><%= mode === "register" ? "Create account" : "Sign in" %></button>
+
+        <% if (mode === "register") { %>
+          <p class="hint">Already have an account? <a href="/login">Sign in</a>.</p>
+        <% } else { %>
+          <p class="hint">Need an account? <a href="/register">Create one</a>.</p>
+        <% } %>
+      </form>
+    </main>
+  </body>
+</html>
