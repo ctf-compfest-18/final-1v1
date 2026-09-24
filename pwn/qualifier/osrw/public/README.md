@@ -12,4 +12,4 @@ open seek read write
 
 ## Connection Info
 
-tbd
+`nc 34.126.135.169 5700`
