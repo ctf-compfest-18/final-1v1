@@ -1,9 +1,0 @@
-services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: compfest-500
-    ports:
-      - "4200:4200"
-    restart: unless-stopped
