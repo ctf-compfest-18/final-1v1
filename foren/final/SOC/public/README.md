@@ -6,7 +6,7 @@ by Karev
 
 ## Description
 
-You just got accepted as a L1 SOC intern at a company. However soon after the company's website got hacked and you've been tasked to find out what happen
+You just got accepted as a L1 SOC intern at a company. However soon after, on September 20th, 2026, the company's website got hacked and you've been tasked to find out what happen.
 
 
 login with admin:SecretPassword
