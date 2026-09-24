@@ -12,4 +12,4 @@ theres a really easy way to solve this
 
 ## Connection Info
 
-`nc <host> 8500`
+`nc 34.126.135.169 8500`
