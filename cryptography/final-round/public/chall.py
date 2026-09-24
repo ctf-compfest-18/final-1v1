@@ -8,7 +8,6 @@ p, q = generate_primes(512)
 n = p * q
 e = 65537
 
-# two integers that are never published on their own
 x = random.randrange(p // 10, p // 9)
 y = random.randrange(p // 10, p // 9)
 
