@@ -3,7 +3,7 @@ services:
     build: ./src
     restart: always
     ports:
-      - "5200:1337"
+      - "5700:1337"
     read_only: true
     cap_drop:
       - ALL
