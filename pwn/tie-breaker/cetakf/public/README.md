@@ -12,4 +12,4 @@ easy
 
 ## Connection Info
 
-`nc <host> 5400`
+`nc 34.126.135.169 5400`
