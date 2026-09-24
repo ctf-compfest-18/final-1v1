@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: compfest-final-destination
+    container_name: compfest-500
     ports:
-      - "4201:4201"
+      - "4200:4200"
     restart: unless-stopped
