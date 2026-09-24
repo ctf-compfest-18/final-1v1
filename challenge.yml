@@ -1,0 +1,13 @@
+name: "No Time to Prime"
+category: "Cryptography"
+author: "COMPFEST Final Probset"
+difficulty: "Final Tie-Breaker"
+points: 0
+description: |
+  Three cryptographic mistakes. One encrypted flag.
+  Recover what each stage reveals, follow the chain, and get the flag before time runs out.
+flag: "COMPFEST18{n0_t1m3_t0_pr1m3_just_ch41n_th3_m4th}"
+hint: "Bandingkan nilai-nilai RSA yang diberikan sebelum mencoba serangan yang lebih rumit. Setiap hasil yang di dapat akan membuka kelemahan berikutnya."
+files:
+  - public/chall.py
+  - public/output.txt
