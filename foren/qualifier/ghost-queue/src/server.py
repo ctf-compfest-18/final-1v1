@@ -70,7 +70,7 @@ def reply(command: str) -> str:
 
 class Handler(socketserver.StreamRequestHandler):
     def handle(self):
-        self.connection.settimeout(10)
+        self.connection.settimeout(60)
         try:
             self.wfile.write(BANNER.encode() + b"> ")
             while True:
