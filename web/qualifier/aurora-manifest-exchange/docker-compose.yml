@@ -5,7 +5,7 @@ services:
       PORT: 3000
       FLAG: ${FLAG:-COMPFEST18{aurora_manifest_local_placeholder_not_for_submission}}
     ports:
-      - "${PORT_MAP:-4007}:3000"
+      - "${PORT_MAP:-4009}:3000"
     read_only: true
     tmpfs:
       - /tmp
