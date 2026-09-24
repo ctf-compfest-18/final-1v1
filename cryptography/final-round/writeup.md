@@ -199,8 +199,18 @@ both rather than assume.
 
 **Regenerating.** `challenge/secret.py` holds the flag and the frozen prime pair. Run
 `python3 chall.py > output.txt` from `challenge/` to mint a new instance ($x, y$ are random
-each run); pass `fresh=True` in `generate_primes` to also draw new close primes. Ship
-**only** `public/`.
+each run); pass `fresh=True` in `generate_primes` to also draw new close primes. Then
+rebuild the attachment:
+
+```bash
+cd challenge && 7z a -tzip -mem=AES256 -p'<password>' ../public/challenge.zip chall.py output.txt
+cd ../public && shasum -a 256 challenge.zip > SHA256SUMS.txt
+```
+
+**Attachment.** Participants get `public/challenge.zip` only - AES-256 encrypted, holding
+just `chall.py` and `output.txt`. The password lives in `README.md` at the challenge root
+(same convention as the other soal), and `public/SHA256SUMS.txt` carries its digest.
+`challenge/` is the authoring copy and must never be shipped: it contains `secret.py`.
 
 **Difficulty.** The factoring is still free (0 Fermat iterations); the added work is purely
 algebraic - spot the factorable form, complete the product, recognise $b + \alpha\beta = n$.
