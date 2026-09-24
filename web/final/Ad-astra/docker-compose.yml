@@ -1,7 +1,32 @@
 services:
-  web:
-    build: ./src
+  ad-astra:
+    build: .
+    image: ad-astra:latest
+    container_name: ad-astra
+    hostname: ad-astra
     ports:
-      - "4123:5024"
-      - "4124:5025"
+      - "4007:4007"
+    volumes:
+      - ./flag.txt:/flag.txt:ro
+    environment:
+      FLAG_PATH: /flag.txt
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    pids_limit: 128
     restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import sys,urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:4007/health', timeout=3).status == 200 else 1)"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
