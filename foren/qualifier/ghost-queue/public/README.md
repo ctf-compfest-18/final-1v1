@@ -1,6 +1,6 @@
 # Ghost Queue
 
-by PolarBear7
+by Kyraux
 
 ---
 

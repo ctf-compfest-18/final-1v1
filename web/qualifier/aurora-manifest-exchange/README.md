@@ -4,7 +4,7 @@
 
 ## Release
 
-- Author: PolarBear7
+- Author: Kyraux
 - Connection: http://34.1.203.129:4007
 - Public attachment: `public/aurora-manifest-exchange.zip`
 - Dist password: `PB7-Finals1v1-2026`

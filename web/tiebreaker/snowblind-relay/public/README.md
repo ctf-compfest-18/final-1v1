@@ -1,6 +1,6 @@
 # Snowblind Relay
 
-by PolarBear7
+by Kyraux
 
 ---
 

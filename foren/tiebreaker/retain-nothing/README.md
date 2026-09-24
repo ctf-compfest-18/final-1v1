@@ -4,7 +4,7 @@
 
 ## Release
 
-- Author: PolarBear7
+- Author: Kyraux
 - Connection: none; this is an offline challenge.
 - Public attachment: `public/retain-nothing.pcap`
 
