@@ -1,0 +1,91 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manchester United | Official Fan Zone</title>
+  <link rel="stylesheet" href="/static/base.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <span class="crest" aria-hidden="true"></span>
+    <span class="wordmark headline">Manchester<span class="red">United</span></span>
+    <nav class="nav">
+      <a href="#club">The Club</a>
+      <a href="#studio">Design Studio</a>
+      <a href="#submit">Submit Entry</a>
+    </nav>
+  </div>
+</div>
+
+<section class="hero">
+  <p class="league">The Theatre of Dreams &middot; Old Trafford</p>
+  <h1 class="headline"><span class="man">Manchester</span><span class="united">United</span></h1>
+  <p class="chant">Twenty times champions of England. Three times kings of Europe.
+     One global family &mdash; the Red Army.</p>
+  <div class="skyline" aria-hidden="true"></div>
+</section>
+
+<section class="club" id="club">
+  <h2 class="section-title">One <span>Club</span></h2>
+  <p class="lead">Born as Newton Heath in 1878, reborn in red and gold. Old Trafford
+     is where the noise never dies and ninety minutes are never enough &mdash;
+     from the Stretford End to every corner of the globe.</p>
+  <div class="club-stats">
+    <div class="stat"><b>20</b><span>League Titles</span></div>
+    <div class="stat"><b>3</b><span>European Cups</span></div>
+    <div class="stat"><b>1878</b><span>Founded</span></div>
+  </div>
+</section>
+
+<section class="studio" id="studio">
+  <div class="inner">
+    <h2 class="section-title">Design <span>Studio</span></h2>
+    <p class="lead">The canvas is yours. Style this page with your own matchday look
+       and send it in &mdash; our media team opens every single entry in their own
+       browser before the weekend. The boldest artwork headlines the club page.</p>
+
+    <form method="post" action="/create">
+      <label for="css">Your artwork (styles only &mdash; the lads handle the rest)</label>
+      <textarea id="css" name="css" rows="10" placeholder="body { background: #da291c; }"></textarea>
+      <button type="submit" class="btn">Publish Artwork</button>
+    </form>
+
+    <div class="submit-block" id="submit">
+      <h2 class="section-title">Send to the <span>Media Team</span></h2>
+      <p class="lead">Got your artwork ID? Drop it below and the lads review
+         it pitch-side &mdash; no exceptions, no shortcuts.</p>
+      <form method="post" action="/report">
+        <label for="theme_id">Artwork ID</label>
+        <input type="text" id="theme_id" name="theme_id" placeholder="32-character artwork ID" size="44">
+        <button type="submit" class="btn">Submit for Review</button>
+      </form>
+    </div>
+
+    <p class="msg">__MSG__</p>
+    <p class="fine">&copy; Manchester United Football Club Limited 2026. All rights reserved.</p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="inner">
+    <div class="col">
+      <h4>The Club</h4>
+      <a href="#club">History</a>
+      <a href="#club">Old Trafford</a>
+      <a href="#club">Legends</a>
+    </div>
+    <div class="col">
+      <h4>Fans</h4>
+      <a href="#studio">Design Studio</a>
+      <a href="#submit">Submit Entry</a>
+    </div>
+  </div>
+  <div class="legal">Manchester United Ltd. Registered Office: Sir Matt Busby Way,
+  Old Trafford, Manchester, M16 0RA.</div>
+</footer>
+
+</body>
+</html>

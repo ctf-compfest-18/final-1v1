@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block body %}
-  <h2>Grand Overture</h2>
-  {% if user %}
-    <p>Welcome to the podium, Maestro <b>{{ user['username'] }}</b>.</p>
-  {% else %}
-    <p>Please enter the stage or join the ensemble.</p>
-  {% endif %}
-{% endblock %}

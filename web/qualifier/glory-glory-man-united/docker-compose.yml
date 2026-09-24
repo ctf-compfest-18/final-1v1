@@ -1,29 +1,23 @@
 services:
-  admin-will-read-it:
-    build: .
-    pull_policy: build
-    image: ggmu
-    container_name: ggmu
-    restart: unless-stopped
+  web:
+    build: ./web
     environment:
-      FLAG: COMPFEST18{plsss_wok_jangan_buat_minggu_gw_suram_lagi_gegara_nontonin_lu_kalah_mulu}
-      SESSION_SECRET: fafaafaf
-      BOT_TOKEN: agfaeowfjoiaewjfw
-      PORT: "3000"
+      FLAG: ${FLAG:-dev_flag}}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:?ADMIN_TOKEN in .env}
+      BOT_URL: http://bot:3000
+      REPORT_COOLDOWN_SECONDS: ${REPORT_COOLDOWN_SECONDS:-60}
     ports:
-      - "4451:3000"
-    read_only: true
-    tmpfs:
-      - /tmp:size=192m
-    security_opt:
-      - no-new-privileges:true
-    healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 8
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 512M
+      - "${WEB_PORT:-4010}:8000"
+    restart: unless-stopped
+
+  bot:
+    build: ./bot
+    environment:
+      WEB_ORIGIN: http://web:8000
+      ADMIN_TOKEN: ${ADMIN_TOKEN:?ADMIN_TOKEN in .env}
+      BOT_WAIT_MS: ${BOT_WAIT_MS:-45000}
+      BOT_GAP_MS: ${BOT_GAP_MS:-2000}
+      BOT_MAX_QUEUE: ${BOT_MAX_QUEUE:-50}
+    depends_on:
+      - web
+    restart: unless-stopped

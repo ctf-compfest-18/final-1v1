@@ -1,0 +1,79 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manchester United | Fan Artwork</title>
+  <link rel="stylesheet" href="/static/base.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <span class="crest" aria-hidden="true"></span>
+    <span class="wordmark headline">Manchester<span class="red">United</span></span>
+    <nav class="nav">
+      <a href="/">Fan Zone</a>
+      <a href="/#studio">Design Studio</a>
+    </nav>
+  </div>
+</div>
+
+<section class="hero">
+  <p class="league">Artwork No. __THEME_ID_SHORT__ &middot; The Theatre of Dreams</p>
+  <h1 class="headline"><span class="man">Manchester</span><span class="united">United</span></h1>
+  <p class="chant">This entry&rsquo;s make-over, freshly reviewed by the media team.
+     Old Trafford approved.</p>
+  <div class="skyline" aria-hidden="true"></div>
+</section>
+
+<section class="club">
+  <h2 class="section-title">One <span>Club</span></h2>
+  <p class="lead">Born as Newton Heath in 1878, reborn in red and gold. Old Trafford
+     is where the noise never dies and ninety minutes are never enough.</p>
+  <div class="club-stats">
+    <div class="stat"><b>20</b><span>League Titles</span></div>
+    <div class="stat"><b>3</b><span>European Cups</span></div>
+    <div class="stat"><b>1878</b><span>Founded</span></div>
+  </div>
+</section>
+
+<section class="studio">
+  <div class="inner">
+    <div class="submit-block">
+      <h2 class="section-title">Send to the <span>Media Team</span></h2>
+      <p class="lead">Think this artwork deserves the spotlight? Pass it on and
+         the lads review it before kick-off.</p>
+      <form method="post" action="/report">
+        <input type="hidden" name="theme_id" value="__THEME_ID__">
+        <button type="submit" class="btn">Submit This Artwork for Review</button>
+      </form>
+    </div>
+    <p class="fine">&copy; Manchester United Football Club Limited 2026. All rights reserved.</p>
+    <a class="back" href="/">&larr; Back to the Fan Zone</a>
+  </div>
+</section>
+
+<input class="secret" name="flag" value="__FLAG__" readonly autocomplete="off"
+       style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:.01">
+<style id="custom-theme">__USER_CSS__</style>
+
+<footer class="site">
+  <div class="inner">
+    <div class="col">
+      <h4>The Club</h4>
+      <a href="/">History</a>
+      <a href="/">Old Trafford</a>
+      <a href="/">Legends</a>
+    </div>
+    <div class="col">
+      <h4>Fans</h4>
+      <a href="/">Fan Zone</a>
+      <a href="/#studio">Design Studio</a>
+    </div>
+  </div>
+  <div class="legal">&copy; Manchester United Football Club Limited 2026. All rights reserved.</div>
+</footer>
+
+</body>
+</html>

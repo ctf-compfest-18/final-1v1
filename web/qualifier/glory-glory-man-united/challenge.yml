@@ -1,16 +1,18 @@
-name: "glory glory man united"
+﻿name: "glory glory man united"
 author: "Sushi"
 category: Web Exploitation
 
 description: |
+  With Carrick we trust
 
   http://{{ IP_SERVER }}:{{ PORT }}
 
 flags:
   - COMPFEST18{plsss_wok_jangan_buat_minggu_gw_suram_lagi_gegara_nontonin_lu_kalah_mulu}
 
+
 files:
-  - public/chall.zip
+  - public/mu.zip
 
 value: 500
 type: dynamic
@@ -19,5 +21,4 @@ minimum: 100
 state: hidden
 
 expose:
-  containerPort: 3000
-  targetPort: 9007
+  containerPort: 8000
