@@ -1,6 +1,6 @@
 # Aurora Manifest Exchange
 
-by PolarBear7
+by Kyraux
 
 ---
 

@@ -4,12 +4,12 @@
 
 ## Release
 
-- Author: PolarBear7
+- Author: Kyraux
 - Connection: `nc 34.1.203.129 7713`
 - Public attachment: `public/ghost-queue.zip`
 - Dist password: `GQ-7mP4xV2qL9sR`
 
-The password is included here for committee distribution. The public dist is `public/README.md` (participant README: name, author, description, connection, hint 1) next to the password-protected evidence ZIP `public/ghost-queue.zip`. Only one hint is released.
+The password is included here for committee distribution. The participant README (`public/README.md`: name, author, description, connection, hint 1) is published both next to and inside the password-protected evidence ZIP `public/ghost-queue.zip`. Only one hint is released.
 
 ## Internal hints (not released)
 

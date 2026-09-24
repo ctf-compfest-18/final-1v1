@@ -4,7 +4,7 @@
 
 ## Release
 
-- Author: PolarBear7
+- Author: Kyraux
 - Connection: http://34.1.203.129:4021
 - Public attachment: none; this is a live service only.
 - Dist password: not applicable.

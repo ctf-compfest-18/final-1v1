@@ -4,12 +4,12 @@
 
 ## Release
 
-- Author: PolarBear7
+- Author: Kyraux
 - Connection: `nc 34.1.203.129 7749`
 - Public attachment: `public/last-good-commit.zip`
 - Dist password: `LGC-4nZ8pQ6vK2dM`
 
-The password is included here for committee distribution. The public dist is `public/README.md` (participant README: name, author, description, connection, hint 1) next to the password-protected evidence ZIP `public/last-good-commit.zip`. Only one hint is released.
+The password is included here for committee distribution. The participant README (`public/README.md`: name, author, description, connection, hint 1) is published both next to and inside the password-protected evidence ZIP `public/last-good-commit.zip`. Only one hint is released.
 
 ## Internal hints (not released)
 
