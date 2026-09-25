@@ -11,7 +11,7 @@ aurora-lantern
 aurora-marker
 aurora-northstar
 aurora-outpost
-aurora-polaris
+aurora-beacon
 aurora-signal
 borealis-access
 borealis-archive
@@ -26,7 +26,7 @@ borealis-lantern
 borealis-marker
 borealis-northstar
 borealis-outpost
-borealis-polaris
+borealis-beacon
 borealis-signal
 coldfront-access
 coldfront-archive
@@ -41,7 +41,7 @@ coldfront-lantern
 coldfront-marker
 coldfront-northstar
 coldfront-outpost
-coldfront-polaris
+coldfront-beacon
 coldfront-signal
 icefield-access
 icefield-archive
@@ -55,7 +55,7 @@ icefield-lantern
 icefield-marker
 icefield-northstar
 icefield-outpost
-icefield-polaris
+icefield-beacon
 icefield-semaphore
 icefield-borealis-semaphore
 icefield-signal
@@ -72,5 +72,5 @@ whiteout-lantern
 whiteout-marker
 whiteout-northstar
 whiteout-outpost
-whiteout-polaris
+whiteout-beacon
 whiteout-signal

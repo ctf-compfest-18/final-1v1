@@ -5,7 +5,7 @@ import hashlib
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "public/retain-nothing.pcap"
+OUT = ROOT / ".build/retain-nothing.pcap"
 STATE = b'{"device":"gateway-07","mode":"armed","slot":"night","revision":42,"receipt":"905d0841228374f176ba0a98f1910c9b"}'
 CLIENT = ipaddress.IPv4Address("10.14.8.21").packed
 BROKER = ipaddress.IPv4Address("10.14.8.53").packed
