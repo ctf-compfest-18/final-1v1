@@ -18,7 +18,7 @@ decay: 20
 decay-function: logarithmic
 minimum: 100
 files:
-  - buku-tamu.zip
+  - dist-buku-tamu.zip
 state: hidden
 connection_info: "nc 34.1.203.129 5500"
 expose:

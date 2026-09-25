@@ -27,7 +27,7 @@ stage2 = (unsigned long (*)(const unsigned char *))page;
 puts(stage2(in + 11) ? "mekar" : "belum");
 ```
 
-The real checker is a 388-byte XOR-encrypted blob in `.data`. It only becomes
+The real checker is a 676-byte XOR-encrypted blob in `.data`. It only becomes
 instructions after the loop writes it to an anonymous RWX page, and it is called
 through a function pointer, so there is no call target in the binary for a
 disassembler to follow.
@@ -63,12 +63,19 @@ $ gdb -q -batch \
 Breakpoint 1, 0x0000555555555337 in main ()
 page = 0x7ffff7fbb000
 
-$ objdump -D -b binary -m i386:x86-64 -M intel page.bin | grep movabs
-  42:  48 b9 3f 63 d6 c6 44   movabs rcx,0xc5132244c6d6633f
-  8f:  48 b9 84 e4 4c 4e c4   movabs rcx,0x11cfa6c44e4ce484
-  dc:  48 b9 68 49 cf de 28   movabs rcx,0x8e243828decf4968
- 129:  48 b9 eb e4 64 07 ef   movabs rcx,0x429989ef0764e4eb
- 16d:  48 b8 38 7d e4 86 75   movabs rax,0xd748357586e47d38
+$ objdump -D -b binary -m i386:x86-64 -M intel page.bin | head -14
+   0:  f3 0f 1e fa          endbr64
+   4:  c6 44 24 ff 5b       mov    BYTE PTR [rsp-0x1],0x5b
+   9:  c6 44 24 fe a7       mov    BYTE PTR [rsp-0x2],0xa7
+   e:  c6 44 24 fd 3e       mov    BYTE PTR [rsp-0x3],0x3e
+  13:  c6 44 24 fc c9       mov    BYTE PTR [rsp-0x4],0xc9
+  18:  0f b6 54 24 ff       movzx  edx,BYTE PTR [rsp-0x1]
+  1d:  32 17                xor    dl,BYTE PTR [rdi]
+  24:  80 fa 3f             cmp    dl,0x3f
+  27:  0f 85 73 02 00 00    jne    0x2a0
+  2d:  0f b6 54 24 fe       movzx  edx,BYTE PTR [rsp-0x2]
+  32:  32 57 01             xor    dl,BYTE PTR [rdi+0x1]
+  35:  80 fa d2             cmp    dl,0xd2
 ```
 
 The input there is 40 `A`s. It does not matter what you type as long as the
@@ -88,7 +95,7 @@ $ nm chall | grep stage2
 Read it, XOR with the key, disassemble the result as raw bytes:
 
 ```python
-blob = elf.read(elf.sym['stage2_enc'], 388)
+blob = elf.read(elf.sym['stage2_enc'], 676)
 stage2 = bytes(b ^ KEY[i % 8] for i, b in enumerate(blob))
 ```
 
@@ -106,58 +113,63 @@ flag, dumping the page would *be* the solve. The string would sit in the dump in
 plaintext and the challenge would be over in the time it takes to run `strings`
 on `page.bin`.
 
-It does not. Stage 2 never stores the flag. It transforms your input and
-compares the transform:
+It does not. Stage 2 never stores the flag. It stores a 4-byte repeating key and
+40 comparison bytes, and checks one input byte at a time:
 
 ```c
-#define GROUP(base, want)                                              \
-    do {                                                               \
-        unsigned long v = 0;                                           \
-        int i;                                                         \
-        for (i = 0; i < 8; i++) {                                      \
-            v |= (unsigned long)(unsigned char)(in[(base) + i] ^ k)    \
-                 << (8 * i);                                           \
-            k = (unsigned char)(k * 31 + 17);                          \
-        }                                                              \
-        if (v != (want)) return 0;                                     \
-    } while (0)
+unsigned long check(const unsigned char *in)
+{
+    volatile unsigned char k0 = 0x5B;
+    volatile unsigned char k1 = 0xA7;
+    volatile unsigned char k2 = 0x3E;
+    volatile unsigned char k3 = 0xC9;
+
+    if ((in[ 0] ^ k0) != 0x3F) return 0;
+    if ((in[ 1] ^ k1) != 0xD2) return 0;
+    if ((in[ 2] ^ k2) != 0x53) return 0;
+    ...
+    if ((in[39] ^ k3) != 0xE8) return 0;
+
+    return 1;
+}
 ```
 
-Each byte is XORed against a **rolling** key, the eight results are packed
-little-endian into a 64-bit word, and that word is compared to an immediate. The
-key starts at `0x5B` and advances after every byte, including across group
-boundaries:
+No packing, no 64-bit groups, no advancing state. Position `i` uses key byte
+`i % 4`, so the whole key is the four immediates stored to the stack in the
+prologue. Every comparison byte is an inline literal.
+
+The `volatile` is load-bearing and not decoration. Drop it and gcc `-O1`
+constant-folds `(in[i] ^ K) != M` into `cmp BYTE PTR [rdi+i], M^K`, which puts
+the plaintext flag straight into the dump as immediates:
 
 ```
-k0 = 0x5B
-k_{n+1} = (k_n * 31 + 17) mod 256
+   9:  80 3f 64             cmp    BYTE PTR [rdi],0x64        <- 'd'
+  12:  80 7f 01 75          cmp    BYTE PTR [rdi+0x1],0x75    <- 'u'
+  1c:  80 7f 02 6d          cmp    BYTE PTR [rdi+0x2],0x6d    <- 'm'
 ```
 
-So the dump hands you five 64-bit constants, not a string. Recovering the flag
-takes one more round: unpack each constant little-endian, XOR each byte back
-against the same keystream.
+At that point `strings page.bin` is the entire challenge. With `volatile` the
+key stays a real memory operand, the `xor` survives into the emitted code, and
+the dump carries key-xor-flag rather than flag.
+
+So recovering the flag from the dump takes exactly one pass:
 
 ```python
-k = 0x5B
-body = bytearray()
-for w in wants:                       # the five immediates, in order
-    for i in range(8):
-        body.append(((w >> (8 * i)) & 0xFF) ^ k)
-        k = (k * 31 + 17) & 0xFF
+K = bytes([0x5B, 0xA7, 0x3E, 0xC9])
+body = bytes(cmp[i] ^ K[i % 4] for i in range(40))
 ```
 
-The rolling key is what makes that round necessary rather than cosmetic. A fixed
-XOR byte would show up by eye in the repeating structure of the constants. A
-rolling one does not, and you have to read the `imul`/`add` out of the dump to
-get `31` and `17`.
+One XOR per byte against a 4-byte key you can read off the first five
+instructions. That is the decode round, and it is the whole point: dumping the
+page gets you the check, not the answer.
 
-Body is 40 bytes, exactly five groups. No tail case, no padding.
+Body is 40 bytes, one comparison per byte, no padding.
 
 ## 5. Solve
 
 ```
 $ python3 solve.py chall
-[+] stage 2: 388 bytes decrypted
+[+] stage 2: 676 bytes decrypted
 [+] compare immediates: ['0xc5132244c6d6633f', '0x11cfa6c44e4ce484', '0x8e243828decf4968', '0x429989ef0764e4eb', '0xd748357586e47d38']
 [+] COMPFEST18{dump_th3_rwx_p4g3_th3n_x0r_1t_b4ck_0nc3!}
 [+] re-encrypt matches the immediates
@@ -167,8 +179,8 @@ kunci: mekar
 ```
 
 `solve.py` takes the static path end to end: symbol lookup, XOR, regex the
-`movabs` immediates (`48 b8` / `48 b9` followed by eight bytes), undo the rolling
-key. It then re-encrypts its own answer and asserts it reproduces the immediates,
+comparison bytes out of the `xor dl, [rdi+off]` / `cmp dl, imm` pairs, then XOR
+each one against its key byte. It then re-encrypts its own answer and asserts it reproduces the immediates,
 so a wrong seed or a wrong recurrence fails loudly instead of printing garbage
 that happens to be 40 characters long.
 
@@ -187,8 +199,9 @@ There are no relocations in this file.
 
 That is why stage 2 has no globals, no string literals, no lookup tables and no
 calls leaving the file, and why the five compare values are immediates rather
-than an array. It is also why `GROUP` is a macro: written as a loop over a
-constant array it would land in `.rodata` and take a relocation with it.
+than an array. It is also why the 40 checks are written out longhand: as a loop
+over a constant array of key and comparison bytes, that array would land in
+`.rodata` and take a RIP-relative reference with it.
 
 One flag beyond the specified set was needed: `-fno-asynchronous-unwind-tables`.
 Without it gcc emits `.eh_frame`, which carries one `R_X86_64_PC32` against
@@ -200,12 +213,14 @@ Without it gcc emits `.eh_frame`, which carries one `R_X86_64_PC32` against
 
 ```
 ./
-  challenge.yml      CTFd metadata
-  README.md          author-facing
-public/
-  kepompong.zip      password-protected player distribution (chall + player README)
+  challenge.yml         CTFd challenge metadata
+  README.md             author-facing
 src/
-  chall.c  stage2.c  build.sh  Dockerfile.build  chall  README.player.md
+  chall.c  stage2.c  build.sh  Dockerfile.build    source and build
+  chall                                           build output
+  README.player.md                                player README, packed into the zip
+public/
+  dist-kepompong.zip    the only thing players get: chall + README.md, no source
 writeup/
   solve.py  README.md  readelf-stage2.txt
 ```

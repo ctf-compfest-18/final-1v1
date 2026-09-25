@@ -1,10 +1,10 @@
-$ checksec --file=./public/chall
+$ checksec --file=./src/chall
 RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable	FILE
-[33mPartial RELRO[m   [32mCanary found   [m   [32mNX enabled [m   [31mNo PIE       [m   [32mNo RPATH [m  [32mNo RUNPATH [m  [31m2342 Symbols	[m  [31mNo[m	0		0		./public/chall
+[33mPartial RELRO[m   [32mCanary found   [m   [32mNX enabled [m   [31mNo PIE       [m   [32mNo RPATH [m  [32mNo RUNPATH [m  [31m2342 Symbols	[m  [31mNo[m	0		0		./src/chall
 
 NOTE: "Canary found" is a false positive of checksec on STATIC binaries -- it
 matches __stack_chk_fail shipped inside libc.a. The binary is compiled with
 -fno-stack-protector and the vulnerable function has no canary:
 
-$ objdump -d -M intel public/chall | sed -n "/<desk>:/,/ret/p" | grep -c fs:0x28
+$ objdump -d -M intel src/chall | sed -n "/<desk>:/,/ret/p" | grep -c fs:0x28
 0

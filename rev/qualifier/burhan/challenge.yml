@@ -17,5 +17,5 @@ decay: 20
 decay-function: logarithmic
 minimum: 100
 files:
-  - burhan.zip
+  - dist-burhan.zip
 state: hidden

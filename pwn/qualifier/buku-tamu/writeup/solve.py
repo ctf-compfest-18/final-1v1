@@ -5,7 +5,7 @@
 from pwn import *
 
 context.clear(arch='amd64', os='linux')
-exe = args.BIN or '../public/chall'
+exe = args.BIN or '../src/chall'
 elf = context.binary = ELF(exe, checksec=False)
 
 OFFSET  = 0x28                  # char buf[0x20] + saved rbp

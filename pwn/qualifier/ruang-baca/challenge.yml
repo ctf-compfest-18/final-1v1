@@ -19,7 +19,7 @@ decay: 20
 decay-function: logarithmic
 minimum: 100
 files:
-  - ruang-baca.zip
+  - dist-ruang-baca.zip
 state: hidden
 connection_info: "nc 34.1.203.129 5600"
 expose:

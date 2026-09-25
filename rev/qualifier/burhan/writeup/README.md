@@ -1,6 +1,6 @@
 # Burhan — REV 3, APK Feistel
 
-**Category:** Reverse Engineering · **Difficulty:** medium
+**Category:** Reverse Engineering · **Difficulty:** medium · **Target time:** 11-14 min
 **Flag:** `COMPFEST18{burhan_come_back}`
 
 ---
@@ -11,7 +11,7 @@ One APK. Install it and you get a text field, a button, and an owl that either
 nods or shakes its head. No network, no permissions, no native library.
 
 ```
-$ unzip -P cf18-burhan burhan.zip
+$ unzip -P cf18-burhan dist-burhan.zip
 $ jadx -d out app-release.apk
 INFO  - loading ...
 INFO  - processing ...
@@ -161,7 +161,7 @@ has been around.
   challenge.yml      CTFd metadata
   README.md          author-facing
 public/
-  burhan.zip         password-protected player distribution (apk + player README)
+  dist-burhan.zip    the only thing players get: app-release.apk + README.md, no source
 src/                 Android project root (Java)
   build.gradle  settings.gradle  gradle.properties
   app/build.gradle
@@ -170,7 +170,7 @@ src/                 Android project root (Java)
   app/src/main/res/layout/activity_main.xml
   app/src/main/res/values/strings.xml
   app-release.apk    build output
-  README.player.md   the README that goes inside the zip
+  README.player.md   player README, packed into the zip
 writeup/
   solve.py  README.md  jadx-transcript.txt  jadx-Feistel.java
 ```

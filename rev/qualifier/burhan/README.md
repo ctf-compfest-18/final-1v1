@@ -26,6 +26,20 @@ medium
 ## Tags
 rev, android, feistel, crypto
 
+## Hints
+- **Initial:**
+  ```
+  Yang disimpen bukan kuncinya, hasil olahannya. Bisa diputer balik.
+  ```
+- **10th minute:**
+  ```
+  jadx -d out app-release.apk. Cari method yang manggil enkripsi 4x.
+  ```
+- **15th minute:**
+  ```
+  for k in reversed(K): L,R = R^F(L,k), L.
+  ```
+
 ## Deployment
 - How to compile (CWD is /src):
 ```
@@ -73,3 +87,24 @@ Full transcript, including the decompiled class, is in
 `writeup/jadx-transcript.txt`. The decompiled `Feistel` keeps real method names
 (`f`, `pack`, `encryptBlock`, `check`), the literal `T` / `K` / `CT` arrays and
 the 4-round loop. Only local variable names are lost, which is normal for dex.
+
+Friction audit of the shipped APK, re-run against `src/app-release.apk`:
+```
+$ jadx -d out app-release.apk && find out/sources -name '*.java'
+out/sources/id/compfest/burhan/Feistel.java
+out/sources/id/compfest/burhan/MainActivity.java
+out/sources/id/compfest/burhan/R.java
+
+$ grep -inE 'thread|handler|post\(|runnable|async|executor|looper' out/sources/id/compfest/burhan/*.java
+(no matches)
+```
+Three classes total, one Activity, no anonymous inner classes. `onClick` calls
+`Feistel.check` inline with no indirection. `R.java` is 24 lines of resource ids.
+Nothing to trim.
+
+## Notes
+- SHA256 of both distributed artifacts:
+  ```
+  app-release.apk  693934e39f4301bc3e10fb5af2d102839cdbf1b5babccf1238e4873fed5220ad
+  dist-burhan.zip  690026a32b7558141d15057cc218ee2cd624482070dee6852bf77fccf248451e
+  ```

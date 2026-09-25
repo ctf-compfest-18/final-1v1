@@ -1,6 +1,7 @@
 # PWN 1 — SROP
 
-**Category:** pwn · **Arch:** x86-64 Linux (Ubuntu 22.04) · **Target time:** 13–17 min
+**Category:** pwn
+**Arch:** x86-64 Linux (Ubuntu 22.04)
 **Flag:** `ctf{sr0p_1s_th3_0nly_w4y_0ut_0f_g4dg3t_st4rv4t10n}`
 
 ---
@@ -68,7 +69,6 @@ Full pop/syscall inventory of the image:
 
 ```
 $ ROPgadget --binary chall | grep -E ' : (pop|syscall)'
-0x0000000000401148 : pop rax ; add dil, dil ; loopne 0x4011b5 ; nop ; ret
 0x00000000004011d6 : pop rax ; ret
 0x00000000004011bd : pop rbp ; ret
 0x00000000004011d8 : syscall
@@ -89,27 +89,19 @@ __asm__(".global gadgets\ngadgets:\npop %rax\nret\nsyscall\nret\n");
 | GOT overwrite (Partial RELRO) | needs a write with a controllable destination — `read` into `.bss` is hardcoded to `g_name`, and calling `read` again still needs `rsi` |
 | `__libc_csu_init` universal gadget | glibc ≥ 2.34 (Ubuntu 22.04) no longer emits it |
 
-### The one near-miss worth ruling out
+### Nothing else survives
 
-ROPgadget also reports, out of `deregister_tm_clones`:
+`pop rbp ; ret` is the only other pop in the image, and `rbp` is not an argument
+register. gcc's CRT normally contributes two more sequences out of
+`deregister_tm_clones` and `register_tm_clones`, including a
+`mov edi, <bss> ; jmp rax` that looks like it loads `rdi`. Those stubs are dead
+code in this program, so the build blanks them to `ret` (`src/strip-crt.sh`) and
+they are not in the shipped binary:
 
 ```
-0x0000000000401147 : mov edi, 0x404058 ; jmp rax
+$ ROPgadget --binary chall | grep -E ': (pop|mov|xchg|lea) (rdi|rsi|rdx|rax)'
+0x00000000004011d6 : pop rax ; ret
 ```
-
-This *does* load `rdi`, and `pop rax ; ret` controls the `jmp rax` target, so it
-chains. It is still dead, on three independent counts:
-
-1. `0x404058` is `__bss_start` / `_edata`, **not** `g_name` (`0x404070`). Option 1
-   writes only `0x404070..0x40407f`, so `/bin/sh` can never be placed at
-   `0x404058`.
-2. The gadget consumes `rax` as its jump target, so `rax` cannot simultaneously
-   hold `59`. You can bounce through `syscall` once with `rax = 0x4011d8` (an
-   invalid syscall number, returns `-ENOSYS`) to free `rax` again — but that
-   still leaves point 3.
-3. `rsi` and `rdx` stay whatever `read()` left behind (`rsi` = stack buffer,
-   `rdx` = `0x400`). `execve` with a garbage `envp` returns `EFAULT`, and nothing
-   in the image can zero either register.
 
 **Only `rax` is controllable. The one syscall whose entire argument set comes
 from memory instead of registers is `rt_sigreturn`. Hence SROP.**
@@ -216,15 +208,13 @@ the port `docker-compose.yml` publishes; the compose file overrides the
   challenge.yml         CTFd challenge metadata
   docker-compose.yml    build + serve on :5500
   README.md             author-facing
-  buku-tamu.zip         password-protected player distribution
 src/
-  chall.c               source
-  Makefile              pinned build flags + `verify` target
-  flag.txt              flag baked into the image at build time
-  checksec.txt strings.txt ropgadget.txt    verification transcripts
+  chall.c  Makefile  strip-crt.sh      source and build
+  chall                               build output
+  flag.txt                            the real flag, baked into the image
+  README.player.md                    player README, packed into the zip
 public/
-  chall                 the distributed binary (built on `ubuntu:22.04`)
-  README.md             player-facing
+  dist-buku-tamu.zip    the only thing players get
 writeup/
   solve.py              working solver, local + remote
   README.md             this file
@@ -233,6 +223,6 @@ writeup/
 Run the solver from `writeup/`:
 
 ```
-python3 solve.py                                       # local ../public/chall
+python3 solve.py                                       # local ../src/chall
 python3 solve.py REMOTE HOST=34.1.203.129 PORT=5500    # remote
 ```

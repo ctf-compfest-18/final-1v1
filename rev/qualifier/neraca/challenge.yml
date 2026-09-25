@@ -17,5 +17,5 @@ decay: 20
 decay-function: logarithmic
 minimum: 100
 files:
-  - neraca.zip
+  - dist-neraca.zip
 state: hidden

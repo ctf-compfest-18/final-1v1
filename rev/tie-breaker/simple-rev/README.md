@@ -19,6 +19,9 @@ easy
 ## Tags
 
 
+## Hints
+- simply x0r it with the key
+
 ## Deployment
 
 

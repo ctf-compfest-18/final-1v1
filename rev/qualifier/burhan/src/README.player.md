@@ -1,14 +1,13 @@
 # Burhan
 
-**Author:** demtcsre
+Author: demtcsre
 
-## Deskripsi
+## Description
 
-Burhan, burung hantu itu, sudah lama dipelihara anak-anak lab. Dia tidak
-bisa bicara. Sodorkan kunci, dia cuma mengangguk atau menggeleng, dan tidak
-pernah repot menjelaskan kenapa.
+Burhan, burung hantu itu, sudah lama dipelihara anak-anak lab. Dia tidak bisa
+bicara. Sodorkan kunci, dia cuma mengangguk atau menggeleng, dan tidak pernah
+repot menjelaskan kenapa.
 
-## Petunjuk
+## Hint
 
-Yang dia simpan bukan kuncinya, tapi hasil olahannya. Olahan itu bisa
-diputar balik tanpa perlu membalik tabelnya.
+Yang disimpen bukan kuncinya, hasil olahannya. Bisa diputer balik.

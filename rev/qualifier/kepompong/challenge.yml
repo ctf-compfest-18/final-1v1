@@ -16,5 +16,5 @@ decay: 20
 decay-function: logarithmic
 minimum: 100
 files:
-  - kepompong.zip
+  - dist-kepompong.zip
 state: hidden

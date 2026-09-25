@@ -1,6 +1,6 @@
 # Neraca — REV 2, z3 constraint crackme
 
-**Category:** Reverse Engineering · **Difficulty:** medium
+**Category:** Reverse Engineering · **Difficulty:** medium · **Target time:** 9-13 min
 **Flag:** `COMPFEST18{z3_c0z_wHY_nOT??}`
 
 ---
@@ -27,40 +27,38 @@ fighting the binary.
 
 ## 2. Reading the constraints
 
-`-O0` keeps every multiply as a literal `imul`:
+At `-O0` nothing is folded, but there are also no multiplier constants to read.
+Every ADD equation is a Horner chain of shift-by-6 and add:
 
 ```
-$ objdump -d -M intel chall | grep -oE 'imul +e[a-z]+,e[a-z]+,0x[0-9a-f]+' | sort -u
-imul eax,eax,0xe89         # 3721     = 61^2
-imul eax,eax,0x376a5       # 226981   = 61^3
-imul edx,eax,0xd34551      # 13845841 = 61^4
-imul edx,eax,0x3d          # 61
-imul eax,eax,0x1189        # 4489     = 67^2
-imul eax,eax,0x496db       # 300763   = 67^3
-imul edx,eax,0x1337b51     # 20151121 = 67^4
-imul edx,eax,0x43          # 67
-imul eax,eax,0x13b1        # 5041     = 71^2
-imul eax,eax,0x57617       # 357911   = 71^3
-imul edx,eax,0x183c061     # 25411681 = 71^4
-imul edx,eax,0x47          # 71
-imul eax,eax,0x14d1        # 5329     = 73^2
-imul eax,eax,0x5ef99       # 389017   = 73^3
-imul edx,eax,0x1b152a1     # 28398241 = 73^4
+1390:  mov  eax,DWORD PTR [rbp-0x9c]
+1396:  shl  eax,0x6
+1399:  mov  edx,eax
+139b:  mov  eax,DWORD PTR [rbp-0xa8]
+13a1:  add  eax,edx
+13a3:  shl  eax,0x6
+       ...
+13c8:  add  eax,edx
+13ca:  mov  DWORD PTR [rbp-0x6c],eax
 ```
 
-Four bases: 61, 67, 71, 73. Note what is missing from that list: there is no
-`imul ...,0x49`. gcc emits `*73` as `shl 3 / add / shl 3 / add`, which is
-`((x*8)+x)*8+x`. Miss that and two of the six equations come out wrong.
-
-The right-hand sides are the six `cmp` immediates:
+`shl 6` is a multiply by 64, applied four times, so each equation is a base-64
+positional sum over five bytes:
 
 ```
-cmp DWORD PTR [rbp-0x6c],0x2853245b     # 676537435
-cmp DWORD PTR [rbp-0x68],0x3bd1b36c     # 1003598700
-cmp DWORD PTR [rbp-0x64],0xa8885c1d     # 2827508765
-cmp DWORD PTR [rbp-0x60],0x900e0adb     # 2416839387
-cmp DWORD PTR [rbp-0x5c],0x6d7ed985     # 1837029765
-cmp DWORD PTR [rbp-0x58],0x76           # 118
+((((a*64 + b)*64 + c)*64 + d)*64 + e   ==   64^4*a + 64^3*b + 64^2*c + 64*d + e
+```
+
+Weights are therefore `16777216, 262144, 4096, 64, 1`, the same ladder in all
+five equations. The only constants to transcribe are the six right-hand sides:
+
+```
+cmp DWORD PTR [rbp-0x6c],0x30d20ee3      #  819072739
+cmp DWORD PTR [rbp-0x68],0x31e3b808      #  837007368
+cmp DWORD PTR [rbp-0x64],0x6f68980f      # 1869125647
+cmp DWORD PTR [rbp-0x60],0x5543afff      # 1430499327
+cmp DWORD PTR [rbp-0x5c],0x40eda55f      # 1089316191
+cmp DWORD PTR [rbp-0x58],0x76            #        118
 ```
 
 The 16 unknowns sit in consecutive dword slots, `rbp-0xac` down to `rbp-0x70`
@@ -74,12 +72,12 @@ x8 =-0x8c  x9 =-0x88  x10=-0x84  x11=-0x80  x12=-0x7c  x13=-0x78  x14=-0x74  x15
 Mapping each `mov eax,[rbp-0x..]` through that table gives the system:
 
 ```
-e1: 13845841*x4  + 226981*x1  + 3721*x2  + 61*x0  + x3  == 676537435
-e2: 20151121*x4  + 300763*x7  + 4489*x5  + 67*x6  + x8  == 1003598700
-e3: 25411681*x11 + 357911*x9  + 5041*x8  + 71*x10 + x12 == 2827508765
-e4: 28398241*x13 + 389017*x12 + 5329*x0  + 73*x15 + x14 == 2416839387
-e5: 28398241*x15 + 389017*x5  + 5329*x9  + 73*x13 + x2  == 1837029765
-e6: x1 ^ x3 ^ x7 ^ x11 ^ x14                            == 118
+e1: 64^4*x4  + 64^3*x1  + 64^2*x2  + 64*x0  + x3  ==  819072739
+e2: 64^4*x4  + 64^3*x7  + 64^2*x5  + 64*x6  + x8  ==  837007368
+e3: 64^4*x11 + 64^3*x9  + 64^2*x8  + 64*x10 + x12 == 1869125647
+e4: 64^4*x13 + 64^3*x12 + 64^2*x0  + 64*x15 + x14 == 1430499327
+e5: 64^4*x15 + 64^3*x5  + 64^2*x9  + 64*x13 + x2  == 1089316191
+e6: x1 ^ x3 ^ x7 ^ x11 ^ x14                      ==        118
 ```
 
 Six equations, sixteen unknowns, all `uint32_t`.
@@ -118,15 +116,14 @@ solutions. This one does not:
 ```
 [+] sat in 141 ms
 [+] COMPFEST18{z3_c0z_wHY_nOT??}
-[+] second solution: unsat (in 289 ms) -> unique
+[+] second solution: unsat (in 32 ms) -> unique
 ```
 
 Adding `Or(x[i] != model[i])` and re-solving returns `unsat`, so the printable
 solution is unique and any correct z3 script lands on the flag.
 
 The weight structure is what makes that work. Each ADD equation is a positional
-sum in base 61, 67, 71 or 73, and every one of those bases is smaller than the
-width of the printable range (95). So a single equation on its own does admit
+sum in base 64, which is smaller than the width of the printable range (95). So a single equation on its own does admit
 several printable readings: add one to a digit, subtract the base from the
 next, same total. Overlap kills those. Any such shift moves two bytes at once,
 and nine of the sixteen bytes are covered by a second ADD equation with a
@@ -143,7 +140,7 @@ X = [ZeroExt(24, v) for v in x]          # 32-bit, the width the binary uses
 s = Solver()
 for v in x:
     s.add(UGE(v, 0x20), ULE(v, 0x7e))    # printable ASCII
-s.add(13845841*X[4] + 226981*X[1] + 3721*X[2] + 61*X[0] + X[3] == 676537435)
+s.add(64**4*X[4] + 64**3*X[1] + 64**2*X[2] + 64*X[0] + X[3] == 819072739)
 ...
 s.add(x[1] ^ x[3] ^ x[7] ^ x[11] ^ x[14] == 118)
 ```
@@ -152,7 +149,7 @@ s.add(x[1] ^ x[3] ^ x[7] ^ x[11] ^ x[14] == 118)
 $ python3 solve.py
 [+] sat in 141 ms
 [+] COMPFEST18{z3_c0z_wHY_nOT??}
-[+] second solution: unsat (in 289 ms) -> unique
+[+] second solution: unsat (in 32 ms) -> unique
 
 $ echo 'COMPFEST18{z3_c0z_wHY_nOT??}' | ./chall
 kunci: seimbang
@@ -164,11 +161,12 @@ kunci: seimbang
 ./
   challenge.yml      CTFd metadata
   README.md          author-facing
-  neraca.zip         password-protected player distribution
 src/
-  chall.c  chall  Makefile  Dockerfile.build
+  chall.c  Makefile  Dockerfile.build    source and build
+  chall                                 build output
+  README.player.md                      player README, packed into the zip
 public/
-  chall  README.md
+  dist-neraca.zip    the only thing players get: chall + README.md, no source
 writeup/
   solve.py  README.md
 ```

@@ -28,6 +28,20 @@ medium
 ## Tags
 pwn, srop, sigreturn
 
+## Hints
+- **Initial:**
+  ```
+  Cuma ada satu gadget buat isi register: pop rax. Sisanya numpang lewat satu syscall.
+  ```
+- **10th minute:**
+  ```
+  rax=15. Syscall apa itu?
+  ```
+- **15th minute:**
+  ```
+  pop rax -> 15 -> syscall gadget -> rt_sigreturn. Susun sigcontext palsu: rax=59, rdi=&"/bin/sh", rsi=0, rdx=0. pwntools SigreturnFrame().
+  ```
+
 ## Deployment
 - How to compile (CWD is /src):
 ```
@@ -39,16 +53,8 @@ docker compose up --build -d
 ```
 
 ## Notes
-- Distributed binary: `public/chall`, sha256
-  `dffbbae5158eda41fe6ae7b3761c976ab5b68ffb94af6c7064f18536f5f6351b`.
-  The image recompiles from `src/chall.c` with the same pinned flags.
-- The flag is baked into the image at build time from `src/flag.txt`.
-  Changing it requires `docker compose up --build -d`, not just a restart.
-- redpwn jail needs `privileged: true` to set up namespaces. Without it the
-  container exits at startup, not at exploit time.
-- `JAIL_PORT=5500` is set in the Dockerfile so the jail listens on the port
-  compose publishes. The compose file overrides the other `JAIL_*` limits.
-- The exploit chain lives entirely inside the no-PIE image, so it is
-  libc-version independent. Verified against Ubuntu 22.04 and Kali rolling.
-- Intended solve is SROP. Full reasoning, including the one near-miss gadget
-  (`mov edi, 0x404058 ; jmp rax`) and why it is dead, is in `writeup/README.md`.
+- SHA256 of both distributed artifacts:
+  ```
+  chall               9e93296c31b214de1401c6c05db36837aa818525b065a4e9a73708bee9715bb1
+  dist-buku-tamu.zip  81dd356a33a360d6930366ea43484dfbf6918a64b83e9ae053f7af4518726687
+  ```

@@ -1,12 +1,7 @@
-// PWN 1 - SROP.  Ubuntu 22.04 / x86-64.
-// Build: see Makefile (flags are pinned there, not here).
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-// The entire gadget supply of this binary.  Two gadgets, nothing else:
-//   gadgets+0 : pop rax ; ret
-//   gadgets+2 : syscall ; ret
 __asm__(".global gadgets\ngadgets:\npop %rax\nret\nsyscall\nret\n");
 
 char g_name[16];
@@ -14,14 +9,14 @@ char g_name[16];
 static void set_name(void)
 {
     printf("name (16): ");
-    read(0, g_name, 16);          // raw read: no NUL handling, no length fixup
+    read(0, g_name, 16);
 }
 
 static void leave_message(void)
 {
     char buf[0x20];
     printf("message: ");
-    read(0, buf, 0x400);          // 0x400 into 0x20.  that's the bug.
+    read(0, buf, 0x400);
 }
 
 static int menu(void)

