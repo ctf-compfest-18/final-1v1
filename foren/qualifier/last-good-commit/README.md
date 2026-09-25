@@ -9,14 +9,15 @@
 - Public attachment: `public/last-good-commit.zip`
 - Dist password: `LGC-4nZ8pQ6vK2dM`
 
-The password is included here for committee distribution. The participant README (`public/README.md`: name, author, description, connection, hint 1) is published both next to and inside the password-protected evidence ZIP `public/last-good-commit.zip`. Only one hint is released.
+The password is included here for committee distribution. The participant README (`public/README.md`: name, author, description, connection, hint 1) is published both next to and inside the password-protected evidence ZIP `public/last-good-commit.zip`. Hints 2 and 3 are released by the organizer over time (see below) and are not shipped in the ZIP.
 
-## Internal hints (not released)
+## Hints (give via Discord; keep out of the ZIP)
 
-Only hint 1 is published. Hints 2 and 3 are kept here for organizers and the official writeup:
+Hint 1 ships in the participant README. Give hint 2 at the 10-minute mark and hint 3 at the 15-minute mark (desperate) via Discord.
 
-2. A WAL frame with a nonzero database-size field ends a transaction. Reconstruct the state at each commit boundary on copies.
-3. Match the warehouse record, then include that version's receipt, as lowercase hex, in the proof.
+1. Released: "Keep the database and WAL together; opening the latest state is only the beginning."
+2. 10 minutes: "The database already shows the overwritten row. The trustworthy version is an earlier transaction that still lives in the write-ahead log."
+3. 15 minutes (desperate): "A WAL frame with a nonzero 'database size after commit' field ends a transaction. Copy `inventory.db` and `inventory.db-wal`, truncate the WAL after the first commit frame, open the copy with sqlite3, read the original row (`SHIP-8821`, `BG-14`, quantity `6`, approved `1`, plus its receipt), then submit the SHA-256 of `shipment=SHIP-8821|sku=BG-14|quantity=6|approved=1|receipt=<lowercase hex>` with no trailing newline."
 
 ## Local QA
 

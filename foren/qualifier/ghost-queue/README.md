@@ -9,14 +9,15 @@
 - Public attachment: `public/ghost-queue.zip`
 - Dist password: `GQ-7mP4xV2qL9sR`
 
-The password is included here for committee distribution. The participant README (`public/README.md`: name, author, description, connection, hint 1) is published both next to and inside the password-protected evidence ZIP `public/ghost-queue.zip`. Only one hint is released.
+The password is included here for committee distribution. The participant README (`public/README.md`: name, author, description, connection, hint 1) is published both next to and inside the password-protected evidence ZIP `public/ghost-queue.zip`. Hints 2 and 3 are released by the organizer over time (see below) and are not shipped in the ZIP.
 
-## Internal hints (not released)
+## Hints (give via Discord; keep out of the ZIP)
 
-Only hint 1 is published. Hints 2 and 3 are kept here for organizers and the official writeup:
+Hint 1 ships in the participant README. Give hint 2 at the 10-minute mark and hint 3 at the 15-minute mark (desperate) via Discord.
 
-2. Correlate the job in the collection log with the process and its descriptors.
-3. Hash the exact recovered bytes, including their final newline.
+1. Released: "A removed directory entry does not necessarily remove an open file."
+2. 10 minutes: "The filter process still holds an open file descriptor for the deleted spool. Use the console's `lsof` to read the deleted spool id, then `read-spool <id>`."
+3. 15 minutes (desperate): "On the console run `lsof` to get `/tmp/print-spool-<id> (deleted)`, then `read-spool <id>` to print the document, then submit the lowercase SHA-256 of those exact bytes including the final newline with `submit <sha256>`."
 
 ## Local QA
 
