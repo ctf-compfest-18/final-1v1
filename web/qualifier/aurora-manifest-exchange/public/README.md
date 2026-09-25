@@ -12,7 +12,7 @@ Audit the exchange and recover the sealed export label.
 
 ## Hint
 
-Compare what the validation stage reads with what the release stage reads.
+The same manifest can be interpreted more than once before release.
 
 ## Connection
 

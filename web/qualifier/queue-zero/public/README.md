@@ -12,7 +12,7 @@ Audit the claim flow and recover the sealed release label.
 
 ## Hint
 
-A claim receipt is intended to be single-use, but inspect the exact order of validation and state changes.
+Look closely at what happens between the check and the state update.
 
 ## Connection
 
