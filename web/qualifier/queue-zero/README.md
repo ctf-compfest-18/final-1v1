@@ -7,7 +7,7 @@
 - Author: Kyraux
 - Connection: http://34.1.203.129:4013
 - Public attachment: `public/queue-zero.zip`
-- Dist password: `CF18-Finals1v1-2026`
+- Dist password: `QZ-nfuiHZKMeUY9`
 
 The password is included here for committee distribution. The encrypted public ZIP contains one participant-facing `README.md` only. No source code is shipped to participants.
 
