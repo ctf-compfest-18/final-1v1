@@ -1,7 +1,6 @@
-# Ruang Baca — PWN 2, seccomp ORW
+# Ruang Baca — seccomp ORW
 
-**Category:** pwn · **Arch:** x86-64 Linux (Ubuntu 22.04), statically linked
-**Target time:** 10–13 min · **Flag:** `COMPFEST18{n0_3x3cv3_n0_mm4p_just_0p3n_r34d_wr1t3}`
+**Category:** pwn · **Flag:** `COMPFEST18{n0_3x3cv3_n0_mm4p_just_0p3n_r34d_wr1t3}`
 
 ---
 

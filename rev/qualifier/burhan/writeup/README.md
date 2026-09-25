@@ -1,7 +1,6 @@
-# Burhan — REV 3, APK Feistel
+# Burhan — APK Feistel
 
-**Category:** Reverse Engineering · **Difficulty:** medium · **Target time:** 11-14 min
-**Flag:** `COMPFEST18{burhan_come_back}`
+**Category:** Reverse Engineering · **Flag:** `COMPFEST18{burhan_come_back}`
 
 ---
 

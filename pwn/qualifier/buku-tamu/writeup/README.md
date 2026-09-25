@@ -1,8 +1,6 @@
-# PWN 1 — SROP
+# Buku Tamu — SROP
 
-**Category:** pwn
-**Arch:** x86-64 Linux (Ubuntu 22.04)
-**Flag:** `ctf{sr0p_1s_th3_0nly_w4y_0ut_0f_g4dg3t_st4rv4t10n}`
+**Category:** pwn · **Flag:** `ctf{sr0p_1s_th3_0nly_w4y_0ut_0f_g4dg3t_st4rv4t10n}`
 
 ---
 

@@ -1,7 +1,6 @@
-# Kepompong — REV 4, self-decrypting stage
+# Kepompong — self-decrypting stage
 
-**Category:** Reverse Engineering · **Difficulty:** medium
-**Flag:** `COMPFEST18{dump_th3_rwx_p4g3_th3n_x0r_1t_b4ck_0nc3!}`
+**Category:** Reverse Engineering · **Flag:** `COMPFEST18{dump_th3_rwx_p4g3_th3n_x0r_1t_b4ck_0nc3!}`
 
 ---
 

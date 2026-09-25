@@ -1,7 +1,6 @@
-# Neraca — REV 2, z3 constraint crackme
+# Neraca — z3 constraint crackme
 
-**Category:** Reverse Engineering · **Difficulty:** medium · **Target time:** 9-13 min
-**Flag:** `COMPFEST18{z3_c0z_wHY_nOT??}`
+**Category:** Reverse Engineering · **Flag:** `COMPFEST18{z3_c0z_wHY_nOT??}`
 
 ---
 
