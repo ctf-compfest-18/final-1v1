@@ -5,8 +5,9 @@ category: forensics
 description: |
   An IoT gateway stopped serving its last configuration after a short MQTT incident. A packet capture records the broker traffic immediately before the outage.
 
-  Recover the last retained configuration on gateway/07/config before it was cleared.
-  Submit COMPFEST18{sha256}, using the lowercase SHA-256 of its exact MQTT payload bytes.
+  Recover the last retained configuration published on the topic gateway/07/config before it was cleared.
+
+  The payload is plain ASCII JSON. Submit the lowercase SHA-256 of the exact bytes of that retained PUBLISH payload as they appear in the capture (the full JSON text verbatim, including braces and quotes, with no added whitespace, trailing newline, or re-encoding), wrapped as COMPFEST18{sha256}.
 
   This is an offline packet-capture challenge. No connection is required.
 
@@ -22,4 +23,4 @@ tags:
 
 value: 500
 state: hidden
-attachment: public/retain-nothing.pcap
+attachment: public/retain-nothing.zip

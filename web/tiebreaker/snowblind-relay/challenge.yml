@@ -3,7 +3,7 @@ author: "Kyraux"
 category: web
 
 description: |
-  Polar Relay maintains an incident handoff console for teams operating in low-visibility regions.
+  Boreal Relay maintains an incident handoff console for teams operating in low-visibility regions.
 
   A public session may inspect relay status, while reviewer sessions can release sealed incident labels. The security team has asked for an audit after an old recovery package reappeared in the deployment assets.
 
