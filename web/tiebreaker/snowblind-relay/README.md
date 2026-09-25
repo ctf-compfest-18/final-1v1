@@ -9,7 +9,11 @@
 - Public attachment: none; this is a live service only.
 - Dist password: not applicable.
 
-This tiebreaker has no participant hint and does not ship a password-protected ZIP.
+This tiebreaker ships no participant hint. One reserve hint is documented below for organizers and is given via Discord only if both teams are stuck.
+
+## Hint (reserve; give via Discord only if both teams are stuck)
+
+"The session token is an HS256 JWT signed with a weak secret. `robots.txt` points to `/assets/relay-terms.txt`, a wordlist that contains the signing secret; recover it, then forge a token with `role: reviewer`, `aud: incident-relay`, `channel: snowblind`, request the reviewer handoff, and redeem it for the label."
 
 ## Local QA
 

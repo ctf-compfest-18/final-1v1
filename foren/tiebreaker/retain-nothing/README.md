@@ -9,7 +9,11 @@
 - Public attachment: `public/retain-nothing.zip`
 - Dist password: `RN-6bR3wY8nT5kQ`
 
-The password is included here for committee distribution. The participant README (`public/README.md`: name, author, description, connection, hint 1) is published both next to and inside the password-protected ZIP `public/retain-nothing.zip`, which also contains the capture `retain-nothing.pcap`. Only one hint is released.
+The password is included here for committee distribution. The participant README (`public/README.md`: name, author, description, connection, hint 1) is published both next to and inside the password-protected ZIP `public/retain-nothing.zip`, which also contains the capture `retain-nothing.pcap`. One participant hint ships in the ZIP; the reserve hint below is given via Discord only if both teams are stuck.
+
+## Hint (reserve; give via Discord only if both teams are stuck)
+
+"List the MQTT publishes with `tshark -r retain-nothing.pcap -Y mqtt -T fields -e mqtt.topic -e mqtt.retain`. The last retained payload on `gateway/07/config` before the empty (clear) publish is the configuration. Submit the lowercase SHA-256 of that payload's exact bytes as `COMPFEST18{sha256}`."
 
 ## Local QA
 
