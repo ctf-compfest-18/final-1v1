@@ -12,4 +12,4 @@ open seek read write
 
 ## Connection Info
 
-`nc 34.126.135.169 5700`
+`nc 34.1.203.129 5700`
