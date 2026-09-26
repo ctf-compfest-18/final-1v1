@@ -3,7 +3,7 @@ from pwn import *
 # If running locally:
 #p = process(['python3', 'chall.py'])
 # If remote:
-p = remote('localhost', 7500)
+p = remote('34.1.203.129', 3321)
 
 iv = b'whatisthisfor???'
 
