@@ -4,4 +4,4 @@ COPY --from=ubuntu@sha256:4f838adc7181d9039ac795a7d0aba05a9bd9ecd480d294483169c5
 COPY ./chall /srv/app/run
 COPY ./flag.txt /srv/app/flag.txt
 
-ENV JAIL_PORT=1337
+ENV JAIL_PORT=1337 JAIL_TIME=180

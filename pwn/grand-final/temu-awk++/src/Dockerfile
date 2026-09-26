@@ -5,4 +5,4 @@ COPY ./chall /srv/app/run
 COPY ./flag.txt /srv/app/flag.txt
 RUN chmod 0755 /srv/app/run
 
-ENV JAIL_PORT=1337
+ENV JAIL_PORT=1337 JAIL_TIME=180
