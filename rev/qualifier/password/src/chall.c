@@ -38,6 +38,7 @@ void makepass() {
 }
 
 int main() {
+  setbuf(stdout, 0);
   char buf[256];
   printf("whats da password my man? ");
   init();
