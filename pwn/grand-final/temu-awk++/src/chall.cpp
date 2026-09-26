@@ -4,6 +4,13 @@
 #include <iostream>
 #include <vector>
 
+__attribute__((constructor))
+void disable_buffering() {
+  setbuf(stdin, NULL);
+  setbuf(stdout, NULL);
+  setbuf(stderr, NULL);
+}
+
 // no win function too, i got scammed bruh
 // void win() {
 //   printf("Heres your flag: ");
