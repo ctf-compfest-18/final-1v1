@@ -24,3 +24,5 @@ http://<host>:4007/
 ```
 check helper.__globals__.
 ```
+
+Password: `control_wishes`
