@@ -1,0 +1,23 @@
+name: "Ad astra"
+author: "Sushi"
+category: Web Exploitation
+
+description: |
+  The sky appears clear, but it is far from being a safe haven
+
+  http://{{ IP_SERVER }}:{{ PORT }}
+
+flags:
+  - COMPFEST18{34joj34na034na0f93n}
+
+files:
+  - public/challenge.zip
+
+value: 500
+type: dynamic
+decay: 20
+minimum: 100
+state: hidden
+
+expose:
+  containerPort: 4007

@@ -1,0 +1,39 @@
+name: "Snowblind Relay"
+author: "Kyraux"
+category: web
+
+description: |
+  Boreal Relay maintains an incident handoff console for teams operating in low-visibility regions.
+
+  A public session may inspect relay status, while reviewer sessions can release sealed incident labels. The security team has asked for an audit after an old recovery package reappeared in the deployment assets.
+
+  Review the relay flow and recover the sealed incident label.
+
+  Service: http://{{ IP_SERVER }}:4021
+
+flags:
+  - COMPFEST18{snowblind_relay_3f539d6ec064a0007a9d77c7e6c36ddd2be6beef01bd74f808de32272382e692}
+
+flag_delivery_mode: environment
+
+tags:
+  - web
+  - finals
+  - tiebreaker
+  - jwt
+  - weak-secret
+
+value: 500
+type: container
+scoring-type: dynamic
+decay: 20
+decay-function: logarithmic
+minimum: 100
+
+state: hidden
+pids-limit: 128
+image: ghcr.io/ctf-compfest-18/finals-web-snowblind-relay:latest
+
+expose:
+  containerPort: 3000
+  targetPort: 3000

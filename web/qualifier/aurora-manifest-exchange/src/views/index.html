@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aurora Manifest Exchange</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M20 3 35 12v16L20 37 5 28V12z" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M20 10.5 28.5 15.5v9L20 29.5 11.5 24.5v-9z" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".55"/>
+      </svg>
+      <div>
+        <div class="brand-name">Aurora Freight</div>
+        <div class="brand-sub">Partner manifest exchange</div>
+      </div>
+    </div>
+    <div class="link" id="link" role="status">
+      <span class="link-dot" id="link-dot" aria-hidden="true"></span>
+      <span id="link-text">Checking exchange</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Manifest Exchange</h1>
+    <p class="lede">Paste a partner dispatch note, validate it, then release the approved manifest to the dispatch queue. Sealed exports follow a short handoff.</p>
+  </section>
+
+  <div class="stage" id="deck">
+    <section class="card tilt" id="tilt">
+      <div class="card-head">
+        <h2>Partner manifest</h2>
+        <span class="note">flat JSON, string values</span>
+      </div>
+      <div class="editor">
+        <div class="gutter" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+        <textarea id="manifest" spellcheck="false" autocomplete="off" aria-label="Manifest JSON">{
+  "shipment": "AUR-1048",
+  "scope": "partner",
+  "artifact": "dispatch-note"
+}</textarea>
+      </div>
+      <div class="actions">
+        <button id="approve" type="button">Validate manifest</button>
+        <button id="commit" class="secondary" type="button">Release approved manifest</button>
+      </div>
+      <p class="hint">Validation reads the dispatch note. Releases settle asynchronously, so watch the activity panel.</p>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Exchange activity</h2>
+        <span class="note" id="state-note">idle</span>
+      </div>
+      <ol class="timeline" aria-label="Job lifecycle">
+        <li id="t1" class="node"><span class="dot" aria-hidden="true"></span><div><strong>Approved</strong><em>manifest accepted</em></div></li>
+        <li id="t2" class="node"><span class="dot" aria-hidden="true"></span><div><strong>Queued</strong><em>dispatch job created</em></div></li>
+        <li id="t3" class="node"><span class="dot" aria-hidden="true"></span><div><strong>Ready</strong><em>export handoff issued</em></div></li>
+      </ol>
+      <pre id="output" class="log" aria-live="polite">Nothing submitted yet. Validate a manifest to begin.</pre>
+    </section>
+  </div>
+
+  <footer class="foot">
+    <span>Aurora Freight, internal systems</span>
+    <span id="host">-</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var reduce = false;
+  try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { reduce = false; }
+
+  function host() {
+    var el = document.getElementById('host');
+    if (el) el.textContent = window.location.host;
+  }
+  host();
+
+  var link = document.getElementById('link');
+  var linkText = document.getElementById('link-text');
+  function setLink(ok) {
+    if (link) link.classList.toggle('bad', !ok);
+    if (linkText) linkText.textContent = ok ? 'Exchange reachable' : 'Exchange unreachable';
+  }
+  function ping() {
+    fetch('/health', { cache: 'no-store' }).then(function (r) { setLink(r.ok); }).catch(function () { setLink(false); });
+  }
+  ping();
+  window.setInterval(ping, 15000);
+
+  var canvas = document.getElementById('sky');
+  var ctx = canvas ? canvas.getContext('2d') : null;
+  var W = 0, H = 0, ribbons = [], started = performance.now();
+
+  function seed() {
+    if (!canvas) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.width = Math.floor(window.innerWidth * dpr);
+    H = canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ribbons = [];
+    for (var i = 0; i < 3; i++) {
+      ribbons.push({
+        base: H * (0.14 + i * 0.1),
+        amp: (44 + i * 22) * dpr,
+        wave: (150 + i * 46) * dpr,
+        phase: Math.random() * 6.28,
+        speed: 0.00016 + i * 0.00005,
+        width: (1 + i * 0.4) * dpr
+      });
+    }
+  }
+
+  function frame(now) {
+    if (ctx && !document.hidden) {
+      var t = now - started;
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+      for (var j = 0; j < ribbons.length; j++) {
+        var rb = ribbons[j];
+        ctx.globalAlpha = 0.1;
+        ctx.strokeStyle = j === 1 ? 'rgba(127,227,195,.7)' : 'rgba(122,214,230,.55)';
+        ctx.lineWidth = rb.width;
+        ctx.beginPath();
+        for (var x = 0; x <= W; x += 18) {
+          var y = rb.base + Math.sin(x / rb.wave + t * rb.speed + rb.phase) * rb.amp;
+          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    window.requestAnimationFrame(frame);
+  }
+
+  if (canvas && ctx && !reduce) {
+    seed();
+    window.addEventListener('resize', seed);
+    window.requestAnimationFrame(frame);
+  }
+
+  if (!reduce) {
+    var deck = document.getElementById('deck');
+    var tilt = document.getElementById('tilt');
+    if (deck && tilt) {
+      deck.addEventListener('pointermove', function (e) {
+        var r = deck.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5;
+        var py = (e.clientY - r.top) / r.height - 0.5;
+        tilt.style.transform = 'rotateY(' + (px * 5).toFixed(2) + 'deg) rotateX(' + (-py * 5).toFixed(2) + 'deg)';
+      });
+      deck.addEventListener('pointerleave', function () { tilt.style.transform = ''; });
+    }
+  }
+
+  var approvalId = null;
+  var jobId = null;
+  var output = document.querySelector('#output');
+  var stateNote = document.getElementById('state-note');
+  var stages = ['t1', 't2', 't3'];
+
+  function show(value) {
+    output.textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+  }
+  function setStage(n, note) {
+    for (var i = 0; i < stages.length; i++) {
+      var el = document.getElementById(stages[i]);
+      if (el) el.classList.toggle('on', i <= n);
+    }
+    if (stateNote && note) stateNote.textContent = note;
+  }
+  async function json(url, options) {
+    var r = await fetch(url, options);
+    var body = await r.json();
+    if (!r.ok) throw new Error(body.error || 'request failed');
+    return body;
+  }
+
+  document.querySelector('#approve').onclick = async function () {
+    try {
+      var body = document.querySelector('#manifest').value;
+      var result = await json('/api/manifests/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body });
+      approvalId = result.approvalId;
+      show(result);
+      setStage(0, 'approved');
+    } catch (error) { show(error.message); }
+  };
+
+  document.querySelector('#commit').onclick = async function () {
+    try {
+      if (!approvalId) throw new Error('Validate a manifest first.');
+      var result = await json('/api/manifests/commit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ approvalId: approvalId }) });
+      jobId = result.jobId || null;
+      show(result);
+      if (jobId) { setStage(1, 'queued'); window.setTimeout(poll, 300); }
+    } catch (error) { show(error.message); }
+  };
+
+  async function poll() {
+    try {
+      var result = await json('/api/jobs/' + encodeURIComponent(jobId));
+      show(result);
+      if (result.state === 'ready') setStage(2, 'ready');
+    } catch (error) { show(error.message); }
+  }
+})();
+</script>
+</body>
+</html>

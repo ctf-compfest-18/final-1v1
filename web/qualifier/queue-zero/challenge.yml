@@ -1,0 +1,40 @@
+name: "Queue Zero"
+author: "Kyraux"
+category: web
+
+description: |
+  Northline Claims is rolling out a compensation queue for delayed shipments.
+
+  A single-use claim receipt should be redeemed once before the queue marks it as settled. Recent operational reports show duplicate processing under unusual load.
+
+  Audit the claim flow and recover the sealed release label.
+
+  Service: http://{{ IP_SERVER }}:4013
+
+flags:
+  - COMPFEST18{queue_zero_ff23c183dbcf2457426638231f2d8239b9f2a5a9f2f89d51fa6decd932bb1c33}
+
+flag_delivery_mode: environment
+
+tags:
+  - web
+  - finals
+  - 1v1
+  - race-condition
+  - toctou
+
+value: 500
+type: container
+scoring-type: dynamic
+decay: 20
+decay-function: logarithmic
+minimum: 100
+
+state: hidden
+attachment: public/queue-zero.zip
+pids-limit: 128
+image: ghcr.io/ctf-compfest-18/finals-web-queue-zero:latest
+
+expose:
+  containerPort: 3000
+  targetPort: 3000

@@ -1,0 +1,21 @@
+name: "Neraca"
+author: "demtcsre"
+category: Reverse Engineering
+description: |
+  Neraca tua di gudang arsip, kuningannya sudah menghitam. Cuma ada satu
+  posisi di mana semua lengannya mau diam. Katanya dulu pernah ada yang sempat
+  menemukannya, tapi catatannya ikut hilang waktu gudangnya pindah.
+flags:
+  - COMPFEST18{z3_c0z_wHY_nOT??}
+tags:
+  # - rev
+  # - z3
+  # - smt
+value: 500
+type: dynamic
+decay: 20
+decay-function: logarithmic
+minimum: 100
+files:
+  - dist-neraca.zip
+state: hidden

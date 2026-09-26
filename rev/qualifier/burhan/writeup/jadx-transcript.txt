@@ -1,0 +1,94 @@
+$ jadx -d out app-release.apk
+INFO  - loading ...
+INFO  - processing ...
+INFO  - done
+
+$ ls out/sources/id/compfest/burhan/
+Feistel.java
+MainActivity.java
+R.java
+
+=== out/sources/id/compfest/burhan/MainActivity.java ===
+package id.compfest.burhan;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+/* loaded from: classes.dex */
+public class MainActivity extends Activity implements View.OnClickListener {
+    private EditText input;
+    private TextView result;
+
+    @Override // android.app.Activity
+    protected void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
+        setContentView(R.layout.activity_main);
+        this.input = (EditText) findViewById(R.id.input);
+        this.result = (TextView) findViewById(R.id.result);
+        ((Button) findViewById(R.id.check)).setOnClickListener(this);
+    }
+
+    @Override // android.view.View.OnClickListener
+    public void onClick(View view) {
+        this.result.setText(Feistel.check(this.input.getText().toString().trim()) ? R.string.ok : R.string.bad);
+    }
+}
+
+=== out/sources/id/compfest/burhan/Feistel.java  (T elided) ===
+package id.compfest.burhan;
+
+import java.nio.charset.StandardCharsets;
+
+/* loaded from: classes.dex */
+public final class Feistel {
+    private static final int[] T = { ...256 entries, see jadx-Feistel.java... };
+    private static final int[] K = {-983495488, -1911790962, -1565544969, -220540650};
+    private static final int[] CT = {-2071679150, 38547500, 808035184, -1163625378};
+
+    private static int f(int i, int i2) {
+        int i3 = i ^ i2;
+        int[] iArr = T;
+        return iArr[(i3 >>> 24) & 255] ^ ((iArr[i3 & 255] ^ iArr[(i3 >>> 8) & 255]) ^ iArr[(i3 >>> 16) & 255]);
+    }
+
+    private static int pack(byte[] bArr, int i) {
+        return (bArr[i + 3] & 255) | ((bArr[i] & 255) << 24) | ((bArr[i + 1] & 255) << 16) | ((bArr[i + 2] & 255) << 8);
+    }
+
+    private static int[] encryptBlock(int i, int i2) {
+        int i3 = 0;
+        while (i3 < 4) {
+            int f = i ^ f(i2, K[i3]);
+            i3++;
+            int i4 = i2;
+            i2 = f;
+            i = i4;
+        }
+        return new int[]{i, i2};
+    }
+
+    public static boolean check(String str) {
+        if (str.length() != 28 || !str.startsWith("COMPFEST18{") || str.charAt(27) != '}') {
+            return false;
+        }
+        byte[] bytes = str.substring(11, 27).getBytes(StandardCharsets.US_ASCII);
+        int i = 0;
+        for (int i2 = 0; i2 < 16; i2 += 8) {
+            int[] encryptBlock = encryptBlock(pack(bytes, i2), pack(bytes, i2 + 4));
+            int i3 = encryptBlock[0];
+            int[] iArr = CT;
+            if (i3 != iArr[i] || encryptBlock[1] != iArr[i + 1]) {
+                return false;
+            }
+            i += 2;
+        }
+        return true;
+    }
+
+    private Feistel() {
+    }
+}

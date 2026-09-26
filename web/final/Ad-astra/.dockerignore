@@ -1,0 +1,7 @@
+flag.txt
+solve.py
+README.md
+docs/
+.env
+__pycache__/
+*.pyc

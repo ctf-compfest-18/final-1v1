@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Harbor Deck</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body class="dashboard-body">
+    <aside class="sidebar">
+      <div>
+        <div class="brand">
+          <div class="brand-mark">H</div>
+          <div>
+            <strong>Harbor Deck</strong>
+            <span>Release operations</span>
+          </div>
+        </div>
+        <nav aria-label="Workspace navigation">
+          <a class="active" href="/" aria-current="page">Projects</a>
+        </nav>
+      </div>
+
+      <div class="account-panel">
+        <span class="account-label">Workspace</span>
+        <strong class="text-fragment"><%= user.username %></strong>
+        <form class="logout" method="post" action="/logout">
+          <button type="submit">Sign out</button>
+        </form>
+      </div>
+    </aside>
+
+    <main class="shell">
+      <header class="page-head">
+        <div class="title-block">
+          <h1>Projects</h1>
+          <p>Manage generated service endpoints for <strong><%= user.username %></strong>.</p>
+        </div>
+        <dl class="summary-strip" aria-label="Workspace summary">
+          <div>
+            <dt>Projects</dt>
+            <dd><%= projects.length %></dd>
+          </div>
+          <div>
+            <dt>Domain</dt>
+            <dd>preview.local</dd>
+          </div>
+          <div>
+            <dt>Worker</dt>
+            <dd>Healthy</dd>
+          </div>
+        </dl>
+      </header>
+
+      <section class="workbench">
+        <section class="create-panel">
+          <div class="create-copy">
+            <h2>New project</h2>
+            <p>Use a short lowercase handle. Each project belongs only to this workspace.</p>
+          </div>
+          <form class="create-form" method="post" action="/projects">
+            <label for="name">Project name</label>
+            <div class="create-row">
+              <input id="name" name="name" spellcheck="false" autocomplete="off" autocapitalize="none" placeholder="my-portfolio">
+              <button type="submit">Create</button>
+            </div>
+            <% if (error) { %>
+              <p class="message error"><%= error %></p>
+            <% } else if (created) { %>
+              <p class="message success text-fragment"><%= created.name %> is ready for a service check.</p>
+            <% } else { %>
+              <p class="message hint">The generated endpoint appears in the table below.</p>
+            <% } %>
+          </form>
+        </section>
+
+        <section class="panel project-panel">
+          <div class="panel-head">
+            <div>
+              <h2>Service checks</h2>
+              <p>Run a check and inspect the latest response.</p>
+            </div>
+            <span class="status-badge status-healthy">Worker healthy</span>
+          </div>
+
+          <div class="table">
+            <div class="row heading">
+              <span>Project</span>
+              <span>Service URL</span>
+              <span>Status</span>
+              <span>Last check</span>
+              <span></span>
+            </div>
+
+            <% if (projects.length === 0) { %>
+              <div class="empty-state">
+                <strong>No projects yet</strong>
+                <p>Create one above. Check results will appear in this list.</p>
+              </div>
+            <% } %>
+
+            <% projects.forEach((project) => { %>
+              <article class="row project" id="project-<%= project.id %>">
+                <div class="project-name">
+                  <strong class="text-fragment"><%= project.name %></strong>
+                  <small>ID <%= project.id %></small>
+                </div>
+                <code class="service-url text-fragment">http://<%= project.name %>.preview.local/status</code>
+                <span class="status-badge <%= project.status === "Online" ? "status-online" : project.status === "Unreachable" ? "status-down" : "status-idle" %>"><%= project.status %></span>
+                <span><%= project.lastChecked %></span>
+                <form method="post" action="/projects/<%= project.id %>/check">
+                  <button class="icon-button" title="Run service check" aria-label="Run service check">
+                    <span aria-hidden="true">↻</span>
+                  </button>
+                </form>
+                <pre><%= project.lastResponse %></pre>
+              </article>
+            <% }) %>
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

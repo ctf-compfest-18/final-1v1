@@ -1,0 +1,26 @@
+name: "Buku Tamu"
+author: "demtcsre"
+category: Binary Exploitation
+description: |
+  Kantor lama itu sudah kosong bertahun-tahun, tapi buku tamunya masih
+  tergeletak di meja depan. Tulis namamu, tinggalkan pesan untuk siapa pun yang
+  datang berikutnya. Penjaganya bersumpah dia membaca semuanya, walaupun belum
+  ada yang pernah benar-benar melihat dia.
+flags:
+  - COMPFEST18{sr0p_1s_th3_0nly_w4y_0ut_0f_g4dg3t_st4rv4t10n}
+tags:
+  # - pwn
+  # - srop
+  # - sigreturn
+value: 500
+type: dynamic
+decay: 20
+decay-function: logarithmic
+minimum: 100
+files:
+  - dist-buku-tamu.zip
+state: hidden
+connection_info: "nc 34.1.203.129 5500"
+expose:
+  containerPort: 5500
+  targetPort: 5500

@@ -1,0 +1,82 @@
+const express = require("express");
+const session = require("express-session");
+const { requireUser } = require("./middleware/requireUser");
+const { ProjectNamePolicy } = require("./policies/projectNamePolicy");
+const { ProjectRepository } = require("./repositories/projectRepository");
+const { UserRepository } = require("./repositories/userRepository");
+const { createAuthRouter } = require("./routes/authRoutes");
+const { createProjectRouter } = require("./routes/projectRoutes");
+const { AuthService } = require("./services/authService");
+const { Clock } = require("./services/clock");
+const { HttpPreviewClient } = require("./services/httpPreviewClient");
+const { PreviewUrlFactory } = require("./services/previewUrlFactory");
+const { ProjectService } = require("./services/projectService");
+
+const PORT = Number(process.env.PORT || 8080);
+const FLAG = process.env.FLAG || "COMPFEST18{FAKEFLAG}";
+const SESSION_SECRET = process.env.SESSION_SECRET || "harbor-deck-local-session";
+const PREVIEW_DOMAIN = "preview.local";
+
+function createApp() {
+  const app = express();
+
+  const previewUrlFactory = new PreviewUrlFactory(PREVIEW_DOMAIN);
+  const repository = new ProjectRepository();
+  const userRepository = new UserRepository();
+  const namePolicy = new ProjectNamePolicy(previewUrlFactory);
+  const previewClient = new HttpPreviewClient();
+  const clock = new Clock();
+  const authService = new AuthService(userRepository);
+  const projectService = new ProjectService({
+    repository,
+    namePolicy,
+    previewUrlFactory,
+    previewClient,
+    clock
+  });
+
+  app.set("view engine", "ejs");
+  app.set("views", `${__dirname}/views`);
+
+  app.use(express.urlencoded({ extended: false }));
+  app.use(express.json());
+  app.use(session({
+    name: "harbor.sid",
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax"
+    }
+  }));
+  app.use(express.static(`${__dirname}/public`));
+  app.use(createAuthRouter(authService));
+
+  app.get("/admin/flag", (req, res) => {
+    const remote = req.socket.remoteAddress;
+    const allowed = ["127.0.0.1", "::1", "::ffff:127.0.0.1"];
+
+    if (!allowed.includes(remote)) {
+      return res.status(403).type("text/plain").send("local workers only");
+    }
+
+    return res.type("text/plain").send(FLAG);
+  });
+
+  app.get("/status", (req, res) => {
+    res.type("text/plain").send("service worker healthy");
+  });
+
+  app.use(requireUser(authService), createProjectRouter(projectService));
+
+  return app;
+}
+
+if (require.main === module) {
+  createApp().listen(PORT, "0.0.0.0", () => {
+    console.log(`Harbor Deck listening on ${PORT}`);
+  });
+}
+
+module.exports = { createApp };

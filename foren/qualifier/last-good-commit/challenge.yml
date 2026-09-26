@@ -1,0 +1,27 @@
+name: "Last Good Commit"
+author: "Kyraux"
+category: forensics
+
+description: |
+  The inventory service reports a shipment that the warehouse team never approved. A SQLite database and its write-ahead log were captured during the incident.
+
+  Reconstruct the last committed state that agrees with the warehouse record, then recover the flag.
+
+  Service: nc {{ IP_SERVER }} 7749
+
+flags:
+  - COMPFEST18{d71529044cf35667edab9718f4e66256a9293bbed9724a3a7a43844c69eb353c}
+
+tags:
+  - forensics
+  - sqlite
+  - wal
+  - incident-response
+  - data-recovery
+
+value: 500
+state: hidden
+attachment: public/last-good-commit.zip
+expose:
+  containerPort: 7749
+  targetPort: 7749

@@ -1,0 +1,7 @@
+services:
+  harbor-deck:
+    build: .
+    ports:
+      - "4203:8080"
+    environment:
+      FLAG: COMPFEST18{GUS_RIZAL:okee_3zz_s3mua_soa1mu_ma5}
