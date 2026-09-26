@@ -13,6 +13,11 @@ It's not necessary to understand the original challenges as this is highly modif
 
 - You need to leak libc from the heap.
 
+## Additional Hints
+
+- you can leak libc via unsorted bin, find out how a vector object reallocates to do that. also free(NULL) is a no op in case you forgot :p
+- https://drive.google.com/file/d/19ByPELECUUiQisqggne60zv0g6w_hUTe/view
+
 ## Flag
 
 `COMPFEST18{I_l0v3_r3cycl1ng_ch4ll3ng3s_iT5_g00d_f0r_th3_env1ronm3nt}`
