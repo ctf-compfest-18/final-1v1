@@ -7,7 +7,7 @@
 - Author: Kyraux
 - Connection: http://34.1.203.129:4021
 - Public attachment: none; this is a live service only.
-- Dist password: not applicable.
+- Dist password: QXoSD15OXjumj9k8
 
 This tiebreaker ships no participant hint. One reserve hint is documented below for organizers and is given via Discord only if both teams are stuck.
 

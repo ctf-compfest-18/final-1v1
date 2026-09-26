@@ -13,7 +13,9 @@ The password is included here for committee distribution. The participant README
 
 ## Hint (reserve; give via Discord only if both teams are stuck)
 
-"List the MQTT publishes with `tshark -r retain-nothing.pcap -Y mqtt -T fields -e mqtt.topic -e mqtt.retain`. The last retained payload on `gateway/07/config` before the empty (clear) publish is the configuration. Submit the lowercase SHA-256 of that payload's exact bytes as `COMPFEST18{sha256}`."
+"An MQTT broker keeps one retained message per topic: a later retained publish replaces it, and an empty retained publish clears it." (hint 2)
+
+"List the MQTT publishes with `tshark -r retain-nothing.pcap -Y mqtt -T fields -e mqtt.topic -e mqtt.retain`. The last retained payload on `gateway/07/config` before the empty (clear) publish is the configuration. Submit the lowercase SHA-256 of that payload's exact bytes as `COMPFEST18{sha256}`." (hint 3)
 
 ## Local QA
 

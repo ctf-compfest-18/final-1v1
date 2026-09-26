@@ -10,8 +10,7 @@ The flag is located at /flag.
 username: compfest 
 password: compf3st18_f1nal
 
-## Hint
-forge jwt
-
 ## Connection
-http://34.1.203.129:4200
+
+Team A : http://34.1.203.129:4200
+Team B : http://34.1.203.129:4350

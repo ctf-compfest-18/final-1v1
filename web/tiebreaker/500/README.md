@@ -27,3 +27,9 @@ Penjelasan cara menjalankan service yang dibutuhkan serta requirementsnya.
     ```
     docker-compose up --build --detach
     ```
+
+hint:
+1. forge jwt
+
+Password:
+jyRcoCor15guamRk

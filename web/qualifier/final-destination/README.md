@@ -24,3 +24,5 @@ Penjelasan cara menjalankan service yang dibutuhkan serta requirementsnya.
     ```
     docker-compose up --build --detach
     ```
+
+Zip password : `oFTS7isKQkxrYnrU`

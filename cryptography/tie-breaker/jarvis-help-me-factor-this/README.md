@@ -13,3 +13,6 @@ Two primes are standard. I decided to make it four.
 ## Archive Password
 
 `d609a6653ee63f0b8774ef6c`
+
+## Hint
+https://x.com/sweis/status/2101484464807596264?s=20
