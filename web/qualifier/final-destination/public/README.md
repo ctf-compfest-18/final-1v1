@@ -8,6 +8,11 @@ by jay
 The gate only allows **visitor** routes, but the sorting system may not always read a ticket the same way. Perhaps one route is not the only thing a ticket can carry. Find a way to route your ticket to **conductor** and retrieve the flag.
 
 ## Hint
+
+### Hint1
+HPP?
+
+### Hint2
 ```python
 gate_stamp = routes[0]
 sorter_stamp = routes[-1]

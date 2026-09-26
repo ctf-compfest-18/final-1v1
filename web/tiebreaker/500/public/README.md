@@ -10,6 +10,14 @@ The flag is located at /flag.
 username: compfest 
 password: compf3st18_f1nal
 
+## Hint
+
+### Hint1
+matches = [item for item in COURSES if int(item['id']) == course_id]
+
+### Hint2
+jwt -> admin
+
 ## Connection
 
 http://34.1.203.129:4200
