@@ -20,8 +20,8 @@ My fair lady.
 Tingkat kesulitan soal: easy
 
 ## Hints
-* Sixteen known bytes reveal four consecutive generator outputs and then subtract two recurrence equations to eliminate the increment
-* hint
+* Use the highly predictable PNG file signature to recover the first few consecutive internal states of the keystream.
+* Set up the recurrence equations for the known states and subtract them to eliminate the unknown increment.
 * hint dst.
 
 ## Tags

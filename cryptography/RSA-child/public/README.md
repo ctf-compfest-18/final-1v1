@@ -17,8 +17,8 @@ You know what a man-child is, and you know what a woman-child is. You should alr
 Tingkat kesulitan soal: easy
 
 ## Hints
-* They may look far apart, but if you multiply the modulus correctly, the gap between the primes becomes small enough to break.
-* hint
+* The primes may look far apart, but multiplying the modulus by a specific small constant changes everything.
+* Once multiplied correctly, the gap between the factors becomes small enough to easily break using Fermat's Factorization.
 * hint dst.
 
 ## Tags
