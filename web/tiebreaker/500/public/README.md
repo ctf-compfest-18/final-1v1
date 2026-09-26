@@ -13,9 +13,12 @@ password: compf3st18_f1nal
 ## Hint
 
 ### Hint1
-matches = [item for item in COURSES if int(item['id']) == course_id]
+debug??
 
 ### Hint2
+matches = [item for item in COURSES if int(item['id']) == course_id]
+
+### Hint3
 jwt -> admin
 
 ## Connection
