@@ -26,3 +26,12 @@ Penjelasan cara menjalankan service yang dibutuhkan serta requirementsnya.
     ```
 
 Zip password : `oFTS7isKQkxrYnrU`
+
+### Hint1
+HPP?
+
+### Hint2
+```python
+gate_stamp = routes[0]
+sorter_stamp = routes[-1]
+```
