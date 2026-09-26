@@ -15,7 +15,7 @@ It's not necessary to understand the original challenges as this is highly modif
 
 ## Additional Hints
 
-- Find out how the C++ vector object is structured and how the methods change the modify it.
+- you can leak libc via unsorted bin, find out how a vector object reallocates to do that.
 - https://drive.google.com/file/d/19ByPELECUUiQisqggne60zv0g6w_hUTe/view
 
 ## Flag
