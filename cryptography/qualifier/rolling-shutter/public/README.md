@@ -11,4 +11,5 @@ London Bridge is falling down,
 My fair lady.
 
 ## Hints
-* Sixteen known bytes reveal four consecutive generator outputs and then subtract two recurrence equations to eliminate the increment
+* Use the highly predictable PNG file signature to recover the first few consecutive internal states of the keystream.
+* Set up the recurrence equations for the known states and subtract them to eliminate the unknown increment.
