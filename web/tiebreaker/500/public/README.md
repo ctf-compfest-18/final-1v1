@@ -12,5 +12,4 @@ password: compf3st18_f1nal
 
 ## Connection
 
-Team A : http://34.1.203.129:4200
-Team B : http://34.1.203.129:4350
+http://34.1.203.129:4200
