@@ -13,7 +13,7 @@ medium
 ## Additional Hints
 
 - The vm image may look long but its actually just repeating checks
-- 
+- disass.py: https://gist.github.com/adamrayyana/140f9401e889e25a65256f5ea6d2e883
 
 
 ## Flag
