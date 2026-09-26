@@ -26,3 +26,12 @@ Penjelasan cara menjalankan service yang dibutuhkan serta requirementsnya.
     ```
 
 Password: `ZqaDvVRUZQbnAZUk`
+
+### Hint1
+/services
+
+### Hint2
+name.slice(0, 32) -> http://${project.name}.preview.local/status
+
+### Hint3
+2130706433

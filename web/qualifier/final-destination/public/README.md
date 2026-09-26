@@ -9,17 +9,7 @@ The gate only allows **visitor** routes, but the sorting system may not always r
 
 ## Hint
 
-### Hint1
 last one
-
-### Hint2
-hpp
-
-### Hint3
-```python
-gate_stamp = routes[0]
-sorter_stamp = routes[-1]
-```
 
 ## Connection
 http://34.1.203.129:4201

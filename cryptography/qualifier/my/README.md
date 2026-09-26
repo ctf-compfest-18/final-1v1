@@ -17,4 +17,4 @@ my bini
 ## Hints
 
 2. There is a way to recover the key.
-3. tbd
+3. Treat every two pixels as a 2-element vector. The encryption applies the same linear transformation to each vector modulo 256. Since you have both the original and encrypted calibration image, you can use two suitable pixel pairs to solve for the transformation matrix.
