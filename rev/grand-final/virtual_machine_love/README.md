@@ -10,9 +10,16 @@ so can we wander for a spell
 
 medium
 
+## Additional Hints
+
+- The vm image may look long but its actually just repeating checks
+- 
+
+
 ## Flag
 
 `COMPFEST18{0b2e9ca8fb9fd3c60eef}`
 
+## Archive Password
 
-
+`db6dbbc5bca0ae7de5d74c7b`
