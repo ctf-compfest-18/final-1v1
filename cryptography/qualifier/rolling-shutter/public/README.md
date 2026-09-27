@@ -11,4 +11,4 @@ London Bridge is falling down,
 My fair lady.
 
 ## Hints
-* Sixteen known bytes reveal four consecutive generator outputs and then subtract two recurrence equations to eliminate the increment
+PNG files are not random.

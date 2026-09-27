@@ -28,8 +28,14 @@ Penjelasan cara menjalankan service yang dibutuhkan serta requirementsnya.
     docker-compose up --build --detach
     ```
 
-hint:
-1. forge jwt
+### Hint1
+debug??
+
+### Hint2
+matches = [item for item in COURSES if int(item['id']) == course_id]
+
+### Hint3
+jwt -> admin
 
 Password:
 jyRcoCor15guamRk
