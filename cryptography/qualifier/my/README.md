@@ -16,5 +16,6 @@ my bini
 
 ## Hints
 
-2. There is a way to recover the key.
-3. Treat every two pixels as a 2-element vector. The encryption applies the same linear transformation to each vector modulo 256. Since you have both the original and encrypted calibration image, you can use two suitable pixel pairs to solve for the transformation matrix.
+2. They use the same key to encrypt. Reproduce the shuffle on the known image first
+3. This is a known-plaintext attack against a Hill cipher with CBC-like chaining. Remove the previous ciphertext block first, then recover the key matrix mod 256.
+4. The inverse of `(x, y) -> (x + 67y, 76x + 5093y)` mod 256 is `(x, y) -> (229x + 189y, 180x + y)`. After recovering key just decrypt then unshuffle and voila!

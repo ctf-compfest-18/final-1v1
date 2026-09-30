@@ -16,3 +16,4 @@ Two primes are standard. I decided to make it four.
 
 ## Hint
 https://x.com/sweis/status/2101484464807596264?s=20
+also look at the close prime
